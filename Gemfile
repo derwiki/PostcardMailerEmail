@@ -43,6 +43,7 @@ gem "thruster", require: false
 
 gem 'aws-sdk-s3'
 gem 'StreetAddress'
+gem 'mini_magick'
 
 group :production do
   gem 'pg'
