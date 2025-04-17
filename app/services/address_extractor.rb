@@ -40,8 +40,9 @@ class AddressExtractor
           Rails.logger.info("sendgrid extracted_address line #{index}: #{line}")
         end
         oneline_address = lines[1..-1].join(',')
-        Rails.logger.info("sendgrid extracted_address oneline_address #{index}: #{line}")
+        Rails.logger.info("sendgrid extracted_address oneline_address: #{oneline_address}")
         address = StreetAddress::US.parse(oneline_address)
+        Rails.logger.info("sendgrid extracted_address address: #{address}")
         [lines[0].strip, address]
     end
 end
