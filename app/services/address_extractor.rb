@@ -11,7 +11,7 @@ class AddressExtractor
         model = "gpt-3.5-turbo"  # The GPT model to use
         prompt = "Format the following as a valid mailing address for USPS: #{text_body}"  # The text prompt to generate completions for
         max_tokens = 100  # The maximum number of tokens to generate
-        temperature = 0.5  # Controls the randomness of the generated text
+        temperature = 0.0  # Controls the randomness of the generated text
         json_params = {
           "model" => model,
           "messages" => [{"role": "user", "content": prompt}],
