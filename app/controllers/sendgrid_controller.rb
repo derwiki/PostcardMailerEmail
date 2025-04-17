@@ -24,7 +24,7 @@ class SendgridController < ApplicationController
     # "attachments"=>"2", "attachment2"=>#<ActionDispatch::Http::UploadedFile:0x00007f1410791a50 @tempfile=#<Tempfile:/tmp/RackMultipart20230317-2-6g2qyj.txt>, @original_filename="msg-6752-20.txt", @content_type="text/plain", @headers="Content-Disposition: form-data; name=\"attachment2\"; filename=\"msg-6752-20.txt\"\r\nContent-Type: text/plain\r\n">, "dkim"=>"{@gmail.com : pass}", "subject"=>"Elodie and Dada in the Outer Sunset on a sunny Friday", "to"=>"in@postcardmailer.us", "attachment-info"=>"{\"attachment2\":{\"charset\":\"us-ascii\",\"type\":\"text/plain\"},\"attachment1\":{\"filename\":\"FullSizeRender.JPEG\",\"name\":\"FullSizeRender.JPEG\",\"type\":\"image/jpeg\"}}", "from"=>"Adam Derewecki <derewecki@gmail.com>", "text"=>"\r\n\n", "sender_ip"=>"209.85.216.41", "attachment1"=>#<ActionDispatch::Http::UploadedFile:0x00007f14107918c0 @tempfile=#<Tempfile:/tmp/RackMultipart20230317-2-1a5j1wg.JPEG>, @original_filename="FullSizeRender.JPEG", @content_type="image/jpeg", @headers="Content-Disposition: form-data; name=\"attachment1\"; filename=\"FullSizeRender.JPEG\"\r\nContent-Type: image/jpeg\r\n">, "envelope"=>"{\"to\":[\"in@postcardmailer.us\"],\"from\":\"derewecki@gmail.com\"}", "charsets"=>"{\"to\":\"UTF-8\",\"filename\":\"UTF-8\",\"subject\":\"UTF-8\",\"from\":\"UTF-8\",\"text\":\"us-ascii\"}", "SPF"=>"pass", "controller"=>"sendgrid", "action"=>"create"}
     if !bodytext
       Rails.logger.info "SendgridController empty body: #{address}"
-      InboundMailer.failure(from, subject, "Message body was empty").deliver
+      # InboundMailer.failure(from, subject, "Message body was empty").deliver
       return head :ok
     end
 
@@ -38,12 +38,12 @@ class SendgridController < ApplicationController
     Rails.logger.info "SendgridController name: #{name}"
     if !address
       Rails.logger.info "SendgridController bad address: #{address}"
-      InboundMailer.failure(from, subject, "Couldn't extract address from message body: #{bodytext}").deliver
+      # InboundMailer.failure(from, subject, "Couldn't extract address from message body: #{bodytext}").deliver
       return head :ok
     end
     if !params[:attachment1]
       Rails.logger.info "SendgridController missing attachment"
-      InboundMailer.failure(from, subject, "No image was attached").deliver
+      # InboundMailer.failure(from, subject, "No image was attached").deliver
       return head :ok
     end
 
@@ -76,7 +76,7 @@ class SendgridController < ApplicationController
     resp = CreatePostcard.new(from_address, to_address, image_url, subject, dryrun: ).run
     Rails.logger.info("SendgridController DirectMail response: #{resp.body}")
 
-    InboundMailer.success(from, subject, JSON[resp.body]).deliver
+    # InboundMailer.success(from, subject, JSON[resp.body]).deliver
     head :ok
   end
 
