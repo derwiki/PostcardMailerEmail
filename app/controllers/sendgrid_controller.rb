@@ -11,7 +11,7 @@ class SendgridController < ApplicationController
     Rails.logger.info "SendgridController subject: #{subject}"
     from = params[:from]
     Rails.logger.info "SendgridController from: #{from}"
-    Rails.logger.info "SendgridController sending_user: #{sending_user}"
+    # Rails.logger.info "SendgridController sending_user: #{sending_user}"
 
     # if !sending_user
     #   Rails.logger.info "SendgridController no valid sending user for #{from}"
@@ -77,11 +77,11 @@ class SendgridController < ApplicationController
 
   private
 
-    def sending_user
-      if email = params[:from].match(/<([^<>]+)>/).try(:[], 1)
-        email = 'pc@derwiki.net' if email == 'derewecki@gmail.com'  # special case for me
-        email = 'pc@derwiki.net' if email == 'ashkan.pk@gmail.com'  # special case for ashkan
-        User.find_by(email: email)
-      end
-    end
+    # def sending_user
+    #   if email = params[:from].match(/<([^<>]+)>/).try(:[], 1)
+    #     email = 'pc@derwiki.net' if email == 'derewecki@gmail.com'  # special case for me
+    #     email = 'pc@derwiki.net' if email == 'ashkan.pk@gmail.com'  # special case for ashkan
+    #     User.find_by(email: email)
+    #   end
+    # end
 end
