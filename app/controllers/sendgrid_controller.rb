@@ -8,6 +8,9 @@ class SendgridController < ApplicationController
     Rails.logger.info "SendgridController params: #{params}"
     Rails.logger.info "SendgridController params.keys: #{params.keys}"
     subject = params[:subject]
+    today = Date.today
+    formatted_date = today.strftime("%B #{today.day.ordinalize}, %Y")
+    subject += "\n\n#{formatted_date}"
     Rails.logger.info "SendgridController subject: #{subject}"
     from = params[:from]
     Rails.logger.info "SendgridController from: #{from}"
