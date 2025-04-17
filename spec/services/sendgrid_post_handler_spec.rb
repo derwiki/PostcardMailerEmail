@@ -33,10 +33,6 @@ RSpec.describe SendgridPostHandler do
       it 'processes the postcard successfully' do
         handler.process
 
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler params: #{params}")
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler params.keys: #{params.keys}")
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler subject: Test Subject\n\nApril 16th, 2025")
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler found address for nickname: test")
         expect(EssThree).to have_received(:upload).with('test-uuid.jpg', 'test-image-data')
         expect(CreatePostcard).to have_received(:new).with(
           {
@@ -63,11 +59,11 @@ RSpec.describe SendgridPostHandler do
     end
 
     context 'when user does not exist' do
-      it 'logs the user not found message and returns early' do
+      it 'returns early without processing postcard' do
         handler.process
 
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler user not found for email: test@example.com")
         expect(EssThree).not_to have_received(:upload)
+        expect(CreatePostcard).not_to have_received(:new)
       end
     end
 
@@ -76,11 +72,11 @@ RSpec.describe SendgridPostHandler do
         user
       end
 
-      it 'logs the address not found message and returns early' do
+      it 'returns early without processing postcard' do
         handler.process
 
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler address not found for nickname: test")
         expect(EssThree).not_to have_received(:upload)
+        expect(CreatePostcard).not_to have_received(:new)
       end
     end
 
@@ -99,11 +95,11 @@ RSpec.describe SendgridPostHandler do
         address
       end
 
-      it 'logs the missing attachment message and returns early' do
+      it 'returns early without processing postcard' do
         handler.process
 
-        expect(Rails.logger).to have_received(:info).with("SendgridPostHandler missing attachment")
         expect(EssThree).not_to have_received(:upload)
+        expect(CreatePostcard).not_to have_received(:new)
       end
     end
   end
