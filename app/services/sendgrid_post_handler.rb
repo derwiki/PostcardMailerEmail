@@ -14,8 +14,6 @@ class SendgridPostHandler
     formatted_date = today.strftime("%B #{today.day.ordinalize}, %Y")
     subject += "\n\n#{formatted_date}"
     Rails.logger.info "SendgridPostHandler subject: #{subject}"
-    from = @params[:from]
-    Rails.logger.info "SendgridPostHandler from: #{from}"
 
     bodytext = @params[:text]
     if !bodytext
@@ -23,25 +21,8 @@ class SendgridPostHandler
       return
     end
 
-    # Extract email from from field and find user
-    from_email = @params[:from].split("<").last.gsub(">", "").strip
-    user = User.find_by(email: from_email)
-
-    unless user
-      Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
-      return
-    end
-    
-    # Extract nickname from to address and find address
-    nickname = @params[:to].split("@").first
-    address = user.addresses.find_by(nickname: nickname)
-
-    unless address
-      Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
-      return
-    end
-    
-    Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
+    user, address = lookup_user_and_address
+    return unless user && address
 
     if !@params[:attachment1]
       Rails.logger.info "SendgridPostHandler missing attachment"
@@ -76,4 +57,29 @@ class SendgridPostHandler
     resp = CreatePostcard.new(from_address, to_address, image_url, subject, dryrun: dryrun).run
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
   end
-end 
+
+  private
+
+  def lookup_user_and_address
+    # Extract email from from field and find user
+    from_email = @params[:from].split("<").last.gsub(">", "").strip
+    user = User.find_by(email: from_email)
+    
+    unless user
+      Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
+      return [nil, nil]
+    end
+    
+    # Extract nickname from to address and find address
+    nickname = @params[:to].split("@").first
+    address = user.addresses.find_by(nickname: nickname)
+    
+    unless address
+      Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
+      return [nil, nil]
+    end
+    
+    Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
+    [user, address]
+  end
+end

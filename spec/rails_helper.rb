@@ -30,7 +30,8 @@ require 'rspec/rails'
 begin
   ActiveRecord::Migration.maintain_test_schema!
 rescue ActiveRecord::PendingMigrationError => e
-  abort e.to_s.strip
+  puts e.to_s.strip
+  exit 1
 end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
@@ -46,22 +47,20 @@ RSpec.configure do |config|
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
-  # RSpec Rails uses metadata to mix in different behaviours to your tests,
-  # for example enabling you to call `get` and `post` in request specs. e.g.:
+  # RSpec Rails can automatically mix in different behaviours to your tests
+  # based on their file location, for example enabling you to call `get` and
+  # `post` in specs under `spec/controllers`.
   #
-  #     RSpec.describe UsersController, type: :request do
+  # You can disable this behaviour by removing the line below, and instead
+  # explicitly tag your specs with their type, e.g.:
+  #
+  #     RSpec.describe UsersController, type: :controller do
   #       # ...
   #     end
   #
   # The different available types are documented in the features, such as in
-  # https://rspec.info/features/7-1/rspec-rails
-  #
-  # You can also this infer these behaviours automatically by location, e.g.
-  # /spec/models would pull in the same behaviour as `type: :model` but this
-  # behaviour is considered legacy and will be removed in a future version.
-  #
-  # To enable this behaviour uncomment the line below.
-  # config.infer_spec_type_from_file_location!
+  # https://relishapp.com/rspec/rspec-rails/docs
+  config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
