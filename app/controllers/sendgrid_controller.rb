@@ -28,13 +28,13 @@ class SendgridController < ApplicationController
       return head :ok
     end
 
-    Rails.logger.info "SendgridController bodytext: #{bodytext}"
     body_text = params[:text]
     if params[:to].include?("adam@postcardmailer.us")
       Rails.logger.info "SendgridController found to: adam@postcardmailer.us; adding address"
       body_text += "\n\nAdam Derewecki, 210 Holladay Ave, San Francisco, CA 94110"
     end
-    name, address = AddressExtractor.extract(params[:text])
+    Rails.logger.info "SendgridController bodytext: #{bodytext}"
+    name, address = AddressExtractor.extract(body_text)
     Rails.logger.info "SendgridController name: #{name}"
     if !address
       Rails.logger.info "SendgridController bad address: #{address}"
