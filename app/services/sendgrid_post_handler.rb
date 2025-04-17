@@ -1,4 +1,3 @@
-require_relative 'address_extractor'
 require_relative 'create_postcard'
 
 class SendgridPostHandler
@@ -24,50 +23,40 @@ class SendgridPostHandler
       return
     end
 
-    body_text = @params[:text]
-    if @params[:to].include?("adam@postcardmailer.us")
-      Rails.logger.info "SendgridPostHandler found to: adam@postcardmailer.us; adding address"
-      body_text += "\n\nAdam Derewecki, 210 Holladay Ave, San Francisco, CA 94110"
-    else
-      # Check if sender exists in our user table
-      from_email = @params[:from].split("<").last.gsub(">", "").strip
-      user = User.find_by(email: from_email)
+    # Extract email from from field and find user
+    from_email = @params[:from].split("<").last.gsub(">", "").strip
+    user = User.find_by(email: from_email)
 
-      if user
-        # Extract nickname from to address
-        nickname = @params[:to].split("@").first
-        address = user.addresses.find_by(nickname: nickname)
-
-        if address
-          Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
-          body_text += "\n\n#{address.name}, #{address.address1}#{address.address2 ? ", #{address.address2}" : ""}, #{address.city}, #{address.state} #{address.postal_code}"
-        end
-      end
-    end
-    Rails.logger.info "SendgridPostHandler bodytext: #{bodytext}"
-    
-    name, address = AddressExtractor.extract(body_text)
-    Rails.logger.info "SendgridPostHandler name: #{name}"
-    if !address
-      Rails.logger.info "SendgridPostHandler bad address: #{address}"
+    unless user
+      Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
       return
     end
     
+    # Extract nickname from to address and find address
+    nickname = @params[:to].split("@").first
+    address = user.addresses.find_by(nickname: nickname)
+
+    unless address
+      Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
+      return
+    end
+    
+    Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
+
     if !@params[:attachment1]
       Rails.logger.info "SendgridPostHandler missing attachment"
       return
     end
 
-    Rails.logger.info "SendgridPostHandler address: #{address}"
     to_address = {
-      name: name,
-      address1: "#{address.number} #{address.street} #{address.street_type} #{address.unit_prefix}#{address.unit}",
-      address2: nil,
+      name: address.name,
+      address1: address.address1,
+      address2: address.address2,
       city: address.city,
       state: address.state,
       postal_code: address.postal_code
     }
-    Rails.logger.info "SendgridPostHandler extracted_address to_address: #{to_address.inspect}"
+    Rails.logger.info "SendgridPostHandler to_address: #{to_address.inspect}"
 
     from_address = {
       name: "Postcardmailer.us",
