@@ -28,6 +28,21 @@ class SendgridPostHandler
     if @params[:to].include?("adam@postcardmailer.us")
       Rails.logger.info "SendgridPostHandler found to: adam@postcardmailer.us; adding address"
       body_text += "\n\nAdam Derewecki, 210 Holladay Ave, San Francisco, CA 94110"
+    else
+      # Check if sender exists in our user table
+      from_email = @params[:from].split("<").last.gsub(">", "").strip
+      user = User.find_by(email: from_email)
+
+      if user
+        # Extract nickname from to address
+        nickname = @params[:to].split("@").first
+        address = user.addresses.find_by(nickname: nickname)
+
+        if address
+          Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
+          body_text += "\n\n#{address.name}, #{address.address1}#{address.address2 ? ", #{address.address2}" : ""}, #{address.city}, #{address.state} #{address.postal_code}"
+        end
+      end
     end
     Rails.logger.info "SendgridPostHandler bodytext: #{bodytext}"
     
