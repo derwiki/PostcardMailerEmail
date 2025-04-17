@@ -36,8 +36,12 @@ class AddressExtractor
         completions = data["choices"].map { |choice| choice["message"]["content"] }
         #Rails.logger.info("sendgrid extracted_address completions: #{completions}")
         lines = completions[0].strip.split("\n")
-        puts lines[1..-1]
-        address = StreetAddress::US.parse(lines[1..-1].join(','))
+        lines.each_with_index do |line, index|
+          Rails.logger.info("sendgrid extracted_address line #{index}: #{line}")
+        end
+        oneline_address = lines[1..-1].join(',')
+        Rails.logger.info("sendgrid extracted_address oneline_address #{index}: #{line}")
+        address = StreetAddress::US.parse(oneline_address)
         [lines[0].strip, address]
     end
 end
