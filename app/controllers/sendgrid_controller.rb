@@ -71,7 +71,7 @@ class SendgridController < ApplicationController
     image = EssThree.upload(key, params[:attachment1])
     image_url = "https://s3.amazonaws.com/postcardmailer.us/#{key}"
 
-    dryrun = ENV.get("DRYRUN", "true") == "true"
+    dryrun = ENV["DRYRUN"] == "true"
     Rails.logger.info "SendgridController dryrun: #{dryrun}"
     resp = CreatePostcard.new(from_address, to_address, image_url, subject, dryrun: ).run
     Rails.logger.info("SendgridController DirectMail response: #{resp.body}")
