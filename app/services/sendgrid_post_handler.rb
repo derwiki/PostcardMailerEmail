@@ -1,4 +1,5 @@
 require_relative 'create_postcard'
+require_relative 'address_extractor'
 
 class SendgridPostHandler
   def initialize(params)
@@ -8,18 +9,75 @@ class SendgridPostHandler
   def process
     Rails.logger.info "SendgridPostHandler params: #{@params}"
     Rails.logger.info "SendgridPostHandler params.keys: #{@params.keys}"
-    
-    subject = @params[:subject]
-    today = Date.today
-    formatted_date = today.strftime("%B #{today.day.ordinalize}, %Y")
-    subject += "\n\n#{formatted_date}"
-    Rails.logger.info "SendgridPostHandler subject: #{subject}"
 
     bodytext = @params[:text]
     if !bodytext
       Rails.logger.info "SendgridPostHandler empty body"
       return
     end
+
+    # Check if this is a signup request
+    if @params[:to] == "signup@postcardmailer.us"
+      handle_signup_request
+      return
+    end
+
+    # Check if this is an adduser request
+    if @params[:to] == "adduser@postcardmailer.us"
+      handle_adduser_request
+      return
+    end
+
+    handle_mail_postcard_request
+  end
+
+  private
+
+  def handle_signup_request
+    # Extract email from from field
+    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
+    
+    # Check if user already exists
+    if User.exists?(email: from_email)
+      Rails.logger.info "SendgridPostHandler user already exists: #{from_email}"
+      return
+    end
+
+    # Extract name from subject line
+    name = @params[:subject].strip
+    if name.empty?
+      Rails.logger.info "SendgridPostHandler empty name in subject"
+      return
+    end
+
+    # Extract address from body
+    _, address = AddressExtractor.extract(@params[:text])
+    unless address
+      Rails.logger.info "SendgridPostHandler could not parse address from body"
+      return
+    end
+
+    # Create user and their first address
+    user = User.create!(email: from_email)
+    new_address = user.addresses.create!(
+      nickname: name.split.first.downcase,
+      name: name,
+      address1: address.street,
+      address2: address.unit,
+      city: address.city,
+      state: address.state,
+      postal_code: address.postal_code
+    )
+
+    Rails.logger.info "SendgridPostHandler created new user and address: #{new_address.inspect}"
+  end
+
+  def handle_mail_postcard_request
+    subject = @params[:subject]
+    today = Date.today
+    formatted_date = today.strftime("%B #{today.day.ordinalize}, %Y")
+    subject += "\n\n#{formatted_date}"
+    Rails.logger.info "SendgridPostHandler subject: #{subject}"
 
     user, address = lookup_user_and_address
     return unless user && address
@@ -58,11 +116,40 @@ class SendgridPostHandler
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
   end
 
-  private
+  def handle_adduser_request
+    # Extract email from from field and find user
+    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
+    user = User.find_by(email: from_email)
+    
+    unless user
+      Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
+      return
+    end
+
+    # Extract address from subject line
+    name, address = AddressExtractor.extract(@params[:subject])
+    unless address
+      Rails.logger.info "SendgridPostHandler could not parse address from subject"
+      return
+    end
+
+    # Create new address
+    new_address = user.addresses.create!(
+      nickname: name.split.first.downcase,
+      name: name,
+      address1: address.street,
+      address2: address.unit,
+      city: address.city,
+      state: address.state,
+      postal_code: address.postal_code
+    )
+
+    Rails.logger.info "SendgridPostHandler created new address: #{new_address.inspect}"
+  end
 
   def lookup_user_and_address
     # Extract email from from field and find user
-    from_email = @params[:from].split("<").last.gsub(">", "").strip
+    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
     user = User.find_by(email: from_email)
     
     unless user
