@@ -50,8 +50,11 @@ class SendgridPostHandler
       return
     end
 
+    # Prepend name to body text for address extraction
+    body_with_name = "#{name}\n#{@params[:text]}"
+
     # Extract address from body
-    _, address = AddressExtractor.extract(@params[:text])
+    extracted_name, address = AddressExtractor.extract(body_with_name)
     unless address
       Rails.logger.info "SendgridPostHandler could not parse address from body"
       return
