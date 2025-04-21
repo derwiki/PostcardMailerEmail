@@ -37,8 +37,13 @@ class PostcardLifecycleMailer < ApplicationMailer
     @tracking_events = postcard.response_data&.dig("TrackingEvents") || []
     @directmailers_events = postcard.directmailers_events || []
 
+    # Use the nickname in the from email address
+    nickname = postcard.address.nickname.present? ? postcard.address.nickname : 'notifications'
+    from_email = "#{nickname}@postcardmailer.us"
+
     mail(
       to: @user.email,
+      from: from_email,
       subject: "Re: #{@postcard.message}"
     )
   end
