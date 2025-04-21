@@ -1,6 +1,6 @@
 require_relative 'create_postcard'
 require_relative 'address_extractor'
-require_relative 'email_helper'
+require_relative '../models/concerns/email_helper'
 
 class SendgridPostHandler
   include EmailHelper
