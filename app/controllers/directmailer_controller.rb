@@ -59,9 +59,18 @@ class DirectmailerController < ApplicationController
   end
 
   def send_status_notification(postcard)
-    PostcardLifecycleMailer.status_update(postcard).deliver_now
+    begin
+      mail = PostcardLifecycleMailer.status_update(postcard)
+      result = mail.deliver_now
 
-    Rails.logger.info "Status update email sent for Postcard: #{postcard.id}"
+      if result
+        Rails.logger.info "Status update email sent successfully for Postcard: #{postcard.id} to #{postcard.user.email}"
+      else
+        Rails.logger.error "Failed to send status update email for Postcard: #{postcard.id}"
+      end
+    rescue => e
+      Rails.logger.error "Error sending status update email for Postcard: #{postcard.id} - #{e.message}\n#{e.backtrace.join("\n")}"
+    end
   end
 
   def directmailer_webhook_params
