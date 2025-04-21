@@ -21,10 +21,10 @@ RSpec.describe SendgridPostHandler do
     allow(SecureRandom).to receive(:uuid).and_return('test-uuid')
     allow(EssThree).to receive(:upload)
     allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: 'success')))
-    allow(AddressExtractor).to receive(:extract).and_return(['Test User', double(
-      street: '123 Test St',
-      unit: nil,
-      city: 'Test City',
+    allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
+      street: '1234 Maple Avenue',
+      unit: 'Apt 5B',
+      city: 'San Francisco',
       state: 'CA',
       postal_code: '94110'
     )])
@@ -118,8 +118,8 @@ RSpec.describe SendgridPostHandler do
         {
           from: 'New User <new@example.com>',
           to: 'signup@postcardmailer.us',
-          text: '123 Test St, Test City, CA 94110',
-          subject: 'New User'
+          text: 'Sarah Johnson\n1234 Maple Avenue Apt 5B\nSan Francisco, CA 94110',
+          subject: 'Sarah Johnson'
         }
       end
 
@@ -131,10 +131,11 @@ RSpec.describe SendgridPostHandler do
         new_address = Address.last
 
         expect(new_user.email).to eq('new@example.com')
-        expect(new_address.nickname).to eq('new')
-        expect(new_address.name).to eq('New User')
-        expect(new_address.address1).to eq('123 Test St')
-        expect(new_address.city).to eq('Test City')
+        expect(new_address.nickname).to eq('sarah')
+        expect(new_address.name).to eq('Sarah Johnson')
+        expect(new_address.address1).to eq('1234 Maple Avenue')
+        expect(new_address.address2).to eq('Apt 5B')
+        expect(new_address.city).to eq('San Francisco')
         expect(new_address.state).to eq('CA')
         expect(new_address.postal_code).to eq('94110')
       end
@@ -168,16 +169,16 @@ RSpec.describe SendgridPostHandler do
           from: 'Test User <test@example.com>',
           to: 'adduser@postcardmailer.us',
           subject: 'home',
-          text: 'New Address User\n123 Test St, Test City, CA 94110'
+          text: 'Sarah Johnson\n1234 Maple Avenue Apt 5B\nSan Francisco, CA 94110'
         }
       end
 
       before do
         user
-        allow(AddressExtractor).to receive(:extract).and_return(['New Address User', double(
-          street: '123 Test St',
-          unit: nil,
-          city: 'Test City',
+        allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
+          street: '1234 Maple Avenue',
+          unit: 'Apt 5B',
+          city: 'San Francisco',
           state: 'CA',
           postal_code: '94110'
         )])
@@ -189,9 +190,10 @@ RSpec.describe SendgridPostHandler do
         new_address = Address.last
         expect(new_address.user).to eq(user)
         expect(new_address.nickname).to eq('home')
-        expect(new_address.name).to eq('New Address User')
-        expect(new_address.address1).to eq('123 Test St')
-        expect(new_address.city).to eq('Test City')
+        expect(new_address.name).to eq('Sarah Johnson')
+        expect(new_address.address1).to eq('1234 Maple Avenue')
+        expect(new_address.address2).to eq('Apt 5B')
+        expect(new_address.city).to eq('San Francisco')
         expect(new_address.state).to eq('CA')
         expect(new_address.postal_code).to eq('94110')
       end
