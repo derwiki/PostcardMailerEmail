@@ -1,3 +1,46 @@
-PostcardLifecycle#status_update
+POSTCARD STATUS UPDATE
+==============================
 
-<%= @greeting %>, find me in app/views/postcard_lifecycle_mailer/status_update.text.erb
+Hello <%= @user.email.split('@').first&.capitalize %>,
+
+Current Status: <%= @status.humanize %>
+<% if @status_details.present? %>
+<%= @status_details %>
+<% end %>
+
+<% case @status.downcase %>
+<% when "printed" %>
+Your postcard has been printed and is being prepared for mailing.
+<% when "mailed", "in_transit" %>
+Your postcard has been handed off to the postal service and is on its way to the recipient.
+<% when "delivered" %>
+Great news! Your postcard has been delivered to the recipient.
+<% when "returned" %>
+Unfortunately, your postcard was returned to the sender. This could be due to an incorrect address or other delivery issues.
+<% when "error" %>
+We encountered an issue processing your postcard. Please check your account for more details.
+<% else %>
+Your postcard status has been updated.
+<% end %>
+
+<% if @postcard.address.present? %>
+Recipient: <%= @postcard.address.name %>
+Address: <%= @postcard.address.address1 %>, <%= @postcard.address.city %>, <%= @postcard.address.state %> <%= @postcard.address.postal_code %>
+<% end %>
+
+<% if @tracking_events.any? %>
+TRACKING HISTORY:
+<% @tracking_events.each do |event| %>
+- <%= event['Status'] %>: <%= event['Description'] %>
+  <% if event['Timestamp'].present? %>
+  <%= DateTime.parse(event['Timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+  <% end %>
+<% end %>
+<% end %>
+
+To view your postcard details, visit:
+https://postcardmailer.us/postcards/<%= @postcard.id %>
+
+==============================
+© <%= Date.today.year %> PostcardMailer. All rights reserved.
+1198 S Van Ness Ave #80417, San Francisco, CA 94110

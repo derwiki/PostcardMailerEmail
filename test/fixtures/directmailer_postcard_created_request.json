@@ -1,0 +1,24 @@
+{
+	"Description": "2025-04-21 20:52:55 +0000 Postcardmailer.us => Elodie Derewecki",
+	"Size": "4.25x6",
+	"DryRun": true,
+	"WaitForRender": true,
+	"To": {
+		"Name": "Elodie Derewecki",
+		"AddressLine1": "210 Holladay Ave",
+		"AddressLine2": null,
+		"City": "San Francisco",
+		"State": "OH",
+		"Zip": "94110"
+	},
+	"From": {
+		"Name": "Postcardmailer.us",
+		"AddressLine1": "1198 S Van Ness Ave #80417",
+		"AddressLine2": null,
+		"City": "San Francisco",
+		"State": "CA",
+		"Zip": "94110"
+	},
+	"Back": "<html><body style='width: 1875px; height: 1350px; background: url(https://s3.amazonaws.com/postcardmailer.us/f331f6b2-dead-405d-ba99-7ef47defbd6a.jpg); background-size: cover' /></html>",
+	"Front": "<html>\n\n<head>\n    <meta charset='UTF-8'>\n    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>\n    <style>\n        *, *:before, *:after {\n          -webkit-box-sizing: border-box;\n          -moz-box-sizing: border-box;\n          box-sizing: border-box;\n        }\n        body {\n          width: 6.25in;\n          height: 4.5in;\n          margin: 0;\n          padding: 0;\n        }\n        #safe-area {\n          position: absolute;\n          width: 5.875in;\n          height: 3.875in;\n          left: 0.1875in;\n          top: 0.1875in;\n        }\n        #present {\n          background-image: url();\n          background-size: 6.25in 1.5in;\n          width:6.25in;\n          height:1.5in;\n        }\n        #message-to-customer {\n          position: absolute;\n          width: 2.0in;\n          font-family: sans-serif;\n          font-size: 0.18in;\n        }\n        #message {\n          position: absolute;\n          left: 2.5in;\n          top: 1.5in;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n        #border {\n          position: absolute;\n          left: 2.25in;\n          top: 1.875in;\n          width: 4.25in;\n          height: 2.5in;\n          border: 1px black dashed;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n\n\n    </style>\n</head>\n\n<body>\n    <div id='present'> </div>\n    <div id='safe-area'>\n        <div id='message-to-customer'><p>Test subject</p>\n\n<p>April 21st, 2025</p></div>\n        <div id='message'>Brighten someone's day, send a free postcard at postcardmailer.us</div>\n        <div id='border'>&nbsp;</div>\n    </div>\n</body>\n\n</html>\n"
+}

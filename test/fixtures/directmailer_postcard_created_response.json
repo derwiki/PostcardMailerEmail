@@ -1,0 +1,48 @@
+{
+	"PrintRecord": "b36e7559-556c-4686-b480-9743b4faaa85",
+	"Created": "2025-04-21T20:52:56+0000",
+	"MailingDate": "2025-04-22T00:00:00+0000",
+	"Canceled": false,
+	"Status": "DryRun",
+	"Description": "2025-04-21 20:52:55 +0000 Postcardmailer.us => Elodie Derewecki",
+	"Medium": "Postcard",
+	"Size": "4.25x6",
+	"Front": "<html>\n\n<head>\n    <meta charset='UTF-8'>\n    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>\n    <style>\n        *, *:before, *:after {\n          -webkit-box-sizing: border-box;\n          -moz-box-sizing: border-box;\n          box-sizing: border-box;\n        }\n        body {\n          width: 6.25in;\n          height: 4.5in;\n          margin: 0;\n          padding: 0;\n        }\n        #safe-area {\n          position: absolute;\n          width: 5.875in;\n          height: 3.875in;\n          left: 0.1875in;\n          top: 0.1875in;\n        }\n        #present {\n          background-image: url();\n          background-size: 6.25in 1.5in;\n          width:6.25in;\n          height:1.5in;\n        }\n        #message-to-customer {\n          position: absolute;\n          width: 2.0in;\n          font-family: sans-serif;\n          font-size: 0.18in;\n        }\n        #message {\n          position: absolute;\n          left: 2.5in;\n          top: 1.5in;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n        #border {\n          position: absolute;\n          left: 2.25in;\n          top: 1.875in;\n          width: 4.25in;\n          height: 2.5in;\n          border: 1px black dashed;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n\n\n    </style>\n</head>\n\n<body>\n    <div id='present'> </div>\n    <div id='safe-area'>\n        <div id='message-to-customer'><p>Test subject</p>\n\n<p>April 21st, 2025</p></div>\n        <div id='message'>Brighten someone's day, send a free postcard at postcardmailer.us</div>\n        <div id='border'>&nbsp;</div>\n    </div>\n</body>\n\n</html>\n",
+	"Back": "<html><body style='width: 1875px; height: 1350px; background: url(https://s3.amazonaws.com/postcardmailer.us/f331f6b2-dead-405d-ba99-7ef47defbd6a.jpg); background-size: cover' /></html>",
+	"VariablePayload": null,
+	"Cost": 0,
+	"DryRun": true,
+	"RenderedPdf": "https://dmprint.s3.us-west-2.amazonaws.com/assets/d9db8cf56a68e77335d1f752efe92db1b2a0583e8c574695c233d4ebb3f1262e.pdf?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=41be8e73ea045b3c24730a3b52ee1d3ee2497d70d70a840e1403921623eb686c",
+	"PostalCarrier": "USPS",
+	"PostalClass": "First Class",
+	"To": {
+		"Name": "Elodie Derewecki",
+		"NameLine2": "",
+		"AddressLine1": "210 Holladay Ave",
+		"AddressLine2": "",
+		"City": "San Francisco",
+		"State": "OH",
+		"Zip": "94110"
+	},
+	"From": {
+		"Name": "Postcardmailer.us",
+		"AddressLine1": "1198 S Van Ness Ave #80417",
+		"AddressLine2": "",
+		"City": "San Francisco",
+		"State": "CA",
+		"Zip": "94110"
+	},
+	"FrontThumbnails": {
+		"Small": "https://dmprint.s3.us-west-2.amazonaws.com/assets/43c70a13a81ce43ab374649a387b8fc0d493c260cd9f712deaab6737c1c45ef0.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=b66da873fe9609515175c393a6d61cd730abef513a922bbae9c5a439ec202324",
+		"Medium": "https://dmprint.s3.us-west-2.amazonaws.com/assets/1774b4514f3fa40eb4c06c7d274f9294f68f8a80ceeac4d4ca5aba6d008c5d41.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=a210891c34b4b1f5d9c78a442b7dbf689707db80b4d0e9de14c39a71dede7a97",
+		"Large": "https://dmprint.s3.us-west-2.amazonaws.com/assets/8bce29ffaa37bb0dba6b1937e5b35e4ff933c48323df1e719ca62390e33cde94.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=15cc6e920ae15c7965bd0a8cde7b73ce5c40162dc4fcad27090f7dd5fa366150"
+	},
+	"BackThumbnails": {
+		"Small": "https://dmprint.s3.us-west-2.amazonaws.com/assets/eb88c132c6e7bc7f00eff5d0f5f3779669150c1b74281f13176826ff20807229.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=8046dad7b9e722a202a7725a2f1952acf3105b44acb6b3b012eb33f40048d4fe",
+		"Medium": "https://dmprint.s3.us-west-2.amazonaws.com/assets/7441ec8a0d119fbdb24a08f07533957ac556f58ae59a0d013f788d138c8e9604.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=729a576650745551d97a05fc457ad92069c3438595ce150e1d63089ddc412c07",
+		"Large": "https://dmprint.s3.us-west-2.amazonaws.com/assets/31ca79ab7609094351b05a0906a1b535ae55bb341fe01b97a9e87a0bb0c21aab.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T205258Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=6f9183cd14f5e0b254e6f953ac99af796310c9f4139c7b4b6feb9200a15b4bb3"
+	},
+	"TrackingEvents": [],
+	"EstimatedDeliveryDate": "2025-04-25T00:00:00+0000",
+	"ActualDeliveryDate": null
+}
