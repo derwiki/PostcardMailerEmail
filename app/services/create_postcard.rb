@@ -72,6 +72,7 @@ class CreatePostcard
       headers: headers
     }
 
+
     # Store error in database if user and address are provided
     if user && address
       Postcard.create!(
@@ -181,7 +182,10 @@ class CreatePostcard
         <body>
             <div id='present'> </div>
             <div id='safe-area'>
-                <div id='message-to-customer'>#{simple_format(message)}</div>
+                <div id='message-to-customer'>
+                  #{simple_format(message)}
+                  <p style="font-size: 0.14in; color: #666;">#{Date.today.strftime("%B #{Date.today.day.ordinalize}, %Y")}</p>
+                </div>
                 <div id='message'>Brighten someone's day, send a free postcard at postcardmailer.us</div>
                 <div id='border'>&nbsp;</div>
             </div>

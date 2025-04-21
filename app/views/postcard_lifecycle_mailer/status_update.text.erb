@@ -1,7 +1,4 @@
-POSTCARD STATUS UPDATE
-==============================
-
-Hello <%= @user.email.split('@').first&.capitalize %>,
+Hello <%= @postcard.address.name %>,
 
 Current Status: <%= @status.humanize %>
 <% if @status_details.present? %>
@@ -28,6 +25,10 @@ Recipient: <%= @postcard.address.name %>
 Address: <%= @postcard.address.address1 %>, <%= @postcard.address.city %>, <%= @postcard.address.state %> <%= @postcard.address.postal_code %>
 <% end %>
 
+<% if @postcard.message.present? %>
+Message: <%= @postcard.message %>
+<% end %>
+
 <% if @tracking_events.any? %>
 TRACKING HISTORY:
 <% @tracking_events.each do |event| %>
@@ -38,9 +39,7 @@ TRACKING HISTORY:
 <% end %>
 <% end %>
 
-To view your postcard details, visit:
-https://postcardmailer.us/postcards/<%= @postcard.id %>
+View your postcard image: <%= @postcard.image_url %>
 
-==============================
-© <%= Date.today.year %> PostcardMailer. All rights reserved.
-1198 S Van Ness Ave #80417, San Francisco, CA 94110
+© <%= Date.today.year %> PostcardMailer
+1198 S Van Ness Ave #40817, San Francisco, CA 94110

@@ -41,7 +41,7 @@ RSpec.describe "Directmailer Webhooks", type: :request do
 
       before do
         # Mock the mailer to avoid actual email sending in tests
-        allow(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_later)
+        allow(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_now)
       end
 
       it "processes the webhook successfully" do
@@ -82,7 +82,7 @@ RSpec.describe "Directmailer Webhooks", type: :request do
       end
 
       it "sends a status update email" do
-        expect(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_later)
+        expect(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_now)
 
         post '/webhook', params: webhook_payload, as: :json
       end

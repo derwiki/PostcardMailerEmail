@@ -60,7 +60,7 @@ RSpec.describe SendgridPostHandler do
             postal_code: address.postal_code
           },
           "https://s3.amazonaws.com/postcardmailer.us/test-uuid.jpg",
-          "Test Subject\n\nApril 16th, 2025",
+          "Test Subject",
           dryrun: false,
           user: user,
           address: address

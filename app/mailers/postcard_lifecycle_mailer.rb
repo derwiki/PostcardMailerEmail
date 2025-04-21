@@ -39,7 +39,7 @@ class PostcardLifecycleMailer < ApplicationMailer
 
     mail(
       to: @user.email,
-      subject: "Your postcard #{status_subject(@status)}"
+      subject: "Re: #{@postcard.message}"
     )
   end
 

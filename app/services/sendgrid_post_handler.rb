@@ -88,11 +88,9 @@ class SendgridPostHandler
   end
 
   def handle_mail_postcard_request
-    subject = @params[:subject]
-    today = Date.today
-    formatted_date = today.strftime("%B #{today.day.ordinalize}, %Y")
-    subject += "\n\n#{formatted_date}"
-    Rails.logger.info "SendgridPostHandler subject: #{subject}"
+    # Use the original subject as the message without adding date
+    message = @params[:subject]
+    Rails.logger.info "SendgridPostHandler message: #{message}"
 
     user, address = lookup_user_and_address
     return unless user && address
@@ -121,17 +119,21 @@ class SendgridPostHandler
       postal_code: "94110"
     }
 
+    # Upload the image to S3 and store the URL
     key = "#{SecureRandom.uuid}.jpg"
     image = EssThree.upload(key, @params[:attachment1])
     image_url = "https://s3.amazonaws.com/postcardmailer.us/#{key}"
+    Rails.logger.info "SendgridPostHandler uploaded image: #{image_url}"
 
     dryrun = ENV["DRYRUN"] == "true"
     Rails.logger.info "SendgridPostHandler dryrun: #{dryrun}"
+
+    # Create the postcard with the image_url and message
     resp = CreatePostcard.new(
       from_address,
       to_address,
       image_url,
-      subject,
+      message,
       dryrun: dryrun,
       user: user,
       address: address
