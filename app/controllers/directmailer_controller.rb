@@ -59,9 +59,9 @@ class DirectmailerController < ApplicationController
   end
 
   def send_status_notification(postcard)
-    PostcardLifecycleMailer.status_update(postcard).deliver_later
+    PostcardLifecycleMailer.status_update(postcard).deliver_now
 
-    Rails.logger.info "Status update email queued for Postcard: #{postcard.id}"
+    Rails.logger.info "Status update email sent for Postcard: #{postcard.id}"
   end
 
   def directmailer_webhook_params
