@@ -127,8 +127,6 @@
     </div>
   <% end %>
 
-  <%#
-  -- Uncomment this section to include the complete webhook event history
 
   <% if @directmailers_events.any? %>
     <div class="tracking-events">
@@ -143,8 +141,6 @@
       <% end %>
     </div>
   <% end %>
-
-  %>
 
   <p style="text-align: center; margin-top: 30px;">
     <a href="https://postcardmailer.us/postcards/<%= @postcard.id %>" class="button">View Postcard Details</a>
