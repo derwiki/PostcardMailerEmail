@@ -127,10 +127,16 @@ class SendgridPostHandler
 
     dryrun = ENV["DRYRUN"] == "true"
     Rails.logger.info "SendgridPostHandler dryrun: #{dryrun}"
-    resp = CreatePostcard.new(from_address, to_address, image_url, subject, dryrun: dryrun).run
+    resp = CreatePostcard.new(
+      from_address,
+      to_address,
+      image_url,
+      subject,
+      dryrun: dryrun,
+      user: user,
+      address: address
+    ).run
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
-    # add verified_at check
-    # Save response to database
   end
 
   def handle_adduser_request

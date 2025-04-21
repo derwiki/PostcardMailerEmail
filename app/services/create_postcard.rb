@@ -24,16 +24,20 @@ class CreatePostcard
   attr_accessor :message
   attr_accessor :dryrun
   attr_accessor :font_size
+  attr_accessor :user
+  attr_accessor :address
 
   TARGET_URI = URI('https://print.directmailers.com/api/v1/postcard/')
 
-  def initialize(from_address, to_address, url, message, dryrun: true, font_size: nil)
+  def initialize(from_address, to_address, url, message, dryrun: true, font_size: nil, user: nil, address: nil)
     self.from_address = from_address
     self.to_address = to_address
     self.url = url
     self.message = message # soft limit 666 chars
     self.dryrun = dryrun
     self.font_size = font_size || "0.18in"
+    self.user = user
+    self.address = address
   end
 
   def run
@@ -43,13 +47,43 @@ class CreatePostcard
     req = Net::HTTP::Post.new(TARGET_URI)
     req.body = JSON.generate(json_template)
     headers.each { |k, v| req[k] = v }
-    http.request(req)
+
+    response = http.request(req)
+
+    if user && address
+      postcard = Postcard.create!(
+        user: user,
+        address: address,
+        status: response.code,
+        response_data: JSON.parse(response.body),
+        image_url: url,
+        message: message,
+        dryrun: dryrun
+      )
+    end
+
+    response
   rescue StandardError => e
-    raise({
+    error_data = {
       exception: "#{e.class}: #{e.message}",
       template: json_template,
       headers: headers
-    }.to_s)
+    }
+
+    # Store error in database if user and address are provided
+    if user && address
+      Postcard.create!(
+        user: user,
+        address: address,
+        status: 'error',
+        response_data: error_data,
+        image_url: url,
+        message: message,
+        dryrun: dryrun
+      )
+    end
+
+    raise error_data.to_s
   end
 
   def headers
