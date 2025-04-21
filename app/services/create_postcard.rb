@@ -51,14 +51,16 @@ class CreatePostcard
     response = http.request(req)
 
     if user && address
+      response_body = JSON.parse(response.body)
       postcard = Postcard.create!(
         user: user,
         address: address,
         status: response.code,
-        response_data: JSON.parse(response.body),
+        response_data: response_body,
         image_url: url,
         message: message,
-        dryrun: dryrun
+        dryrun: dryrun,
+        print_record_id: response_body['PrintRecord']
       )
     end
 

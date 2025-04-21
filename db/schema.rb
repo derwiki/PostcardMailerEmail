@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_17_043858) do
+ActiveRecord::Schema[8.0].define(version: 2025_04_21_220333) do
   create_table "addresses", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "nickname"
@@ -35,7 +35,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_17_043858) do
     t.boolean "dryrun"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "print_record_id"
+    t.json "directmailers_events", default: []
     t.index ["address_id"], name: "index_postcards_on_address_id"
+    t.index ["print_record_id"], name: "index_postcards_on_print_record_id", unique: true
     t.index ["user_id"], name: "index_postcards_on_user_id"
   end
 

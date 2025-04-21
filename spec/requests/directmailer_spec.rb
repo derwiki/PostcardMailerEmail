@@ -24,7 +24,7 @@ RSpec.describe "Directmailer Webhooks", type: :request do
 
   describe "POST /webhook" do
     context "when a matching Postcard exists" do
-      before do
+      let!(:postcard) do
         Postcard.create!(
           user: user,
           address: address,
@@ -33,17 +33,58 @@ RSpec.describe "Directmailer Webhooks", type: :request do
           response_data: {
             PrintRecord: print_record_id_from_fixture,
             OtherData: 'some info'
-          }
+          },
+          print_record_id: print_record_id_from_fixture,
+          directmailers_events: []
         )
       end
 
+      before do
+        # Mock the mailer to avoid actual email sending in tests
+        allow(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_later)
+      end
+
       it "processes the webhook successfully" do
-        matching_postcard = Postcard.where("response_data LIKE ?", "%#{print_record_id_from_fixture}%").first
+        matching_postcard = Postcard.find_by(print_record_id: print_record_id_from_fixture)
         expect(matching_postcard).to be_present
 
         post '/webhook', params: webhook_payload, as: :json
 
         expect(response).to have_http_status(:ok)
+      end
+
+      it "records the webhook event in directmailers_events" do
+        expect {
+          post '/webhook', params: webhook_payload, as: :json
+        }.to change {
+          postcard.reload.directmailers_events.size
+        }.by(1)
+
+        # Verify the event was prepended (is first in the array)
+        first_event = postcard.reload.directmailers_events.first
+        expect(first_event['event_type']).to eq(webhook_payload['Event'])
+      end
+
+      it "properly handles multiple webhook events" do
+        # First webhook
+        post '/webhook', params: webhook_payload, as: :json
+
+        # Modified second webhook
+        modified_payload = webhook_payload.deep_dup
+        modified_payload['Event'] = 'UpdatedPrintObject'
+        post '/webhook', params: modified_payload, as: :json
+
+        # Check that we have two events, newest first
+        events = postcard.reload.directmailers_events
+        expect(events.size).to eq(2)
+        expect(events[0]['event_type']).to eq('UpdatedPrintObject')
+        expect(events[1]['event_type']).to eq(webhook_payload['Event'])
+      end
+
+      it "sends a status update email" do
+        expect(PostcardLifecycleMailer).to receive_message_chain(:status_update, :deliver_later)
+
+        post '/webhook', params: webhook_payload, as: :json
       end
     end
 
@@ -52,7 +93,7 @@ RSpec.describe "Directmailer Webhooks", type: :request do
         non_existent_id = 'non-existent-uuid-12345'
         webhook_payload['Data'][0]['PrintRecord'] = non_existent_id
 
-        matching_postcard = Postcard.where("response_data LIKE ?", "%#{non_existent_id}%").first
+        matching_postcard = Postcard.find_by(print_record_id: non_existent_id)
         expect(matching_postcard).to be_nil
 
         post '/webhook', params: webhook_payload, as: :json

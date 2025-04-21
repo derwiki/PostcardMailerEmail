@@ -79,6 +79,11 @@
     <% if @status_details.present? %>
       <div style="margin-top: 10px;"><%= @status_details %></div>
     <% end %>
+    <% if @timestamp.present? %>
+      <div style="margin-top: 10px; color: #888; font-size: 12px;">
+        Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>
+      </div>
+    <% end %>
   </div>
 
   <p>
@@ -121,6 +126,25 @@
       <% end %>
     </div>
   <% end %>
+
+  <%#
+  -- Uncomment this section to include the complete webhook event history
+
+  <% if @directmailers_events.any? %>
+    <div class="tracking-events">
+      <h3>Webhook Event History</h3>
+      <% @directmailers_events.each do |event| %>
+        <div class="event">
+          <div><strong><%= event['event_type'] %></strong></div>
+          <div style="color: #888; font-size: 12px;">
+            <%= DateTime.parse(event['timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
+  %>
 
   <p style="text-align: center; margin-top: 30px;">
     <a href="https://postcardmailer.us/postcards/<%= @postcard.id %>" class="button">View Postcard Details</a>

@@ -16,24 +16,53 @@ class DirectmailerController < ApplicationController
       return head :ok
     end
 
-    # Find the postcard by searching the response_data JSON field
-    # Note: This assumes PrintRecord from the creation response is stored at the top level of response_data
-    # Adjust the query '.PrintRecord' if it's nested differently in your response_data structure
-    postcard = Postcard.find_by("response_data ->> 'PrintRecord' = ?", print_record_id)
-
-    if postcard
-      Rails.logger.info "Found matching Postcard: #{postcard.id}"
-      # TODO:
-      # 1. Update Postcard status based on webhook_params[:Event] or data_element[:Status]
-      # 2. Trigger lifecycle email using a new Mailer
-    else
+    # Find the postcard by print_record_id
+    postcard = Postcard.find_by(print_record_id: print_record_id)
+    unless postcard
       Rails.logger.warn "Could not find Postcard with PrintRecord: #{print_record_id}"
-      # Decide how to handle missing postcards - :not_found? :ok? Depends on the webhook provider's expectations.
+      return head :ok
     end
+
+    Rails.logger.info "Found matching Postcard: #{postcard.id}"
+
+    # Record the webhook event
+    record_webhook_event(postcard, webhook_params)
+
+    # Send notification email with updated status information
+    send_status_notification(postcard)
+
     head :ok
   end
 
   private
+
+  def record_webhook_event(postcard, webhook_params)
+    # Create a timestamped event record
+    event = {
+      timestamp: Time.current,
+      event_type: webhook_params[:Event],
+      data: webhook_params
+    }
+
+    # Initialize directmailers_events if nil (shouldn't happen with default [], but just in case)
+    postcard.directmailers_events ||= []
+
+    # Prepend the new event to the array
+    postcard.directmailers_events = [event] + postcard.directmailers_events
+
+    # Save without callbacks or validations to avoid any side effects
+    if postcard.save(validate: false)
+      Rails.logger.info "Recorded webhook event for Postcard: #{postcard.id}"
+    else
+      Rails.logger.error "Failed to record webhook event: #{postcard.errors.full_messages.join(', ')}"
+    end
+  end
+
+  def send_status_notification(postcard)
+    PostcardLifecycleMailer.status_update(postcard).deliver_later
+
+    Rails.logger.info "Status update email queued for Postcard: #{postcard.id}"
+  end
 
   def directmailer_webhook_params
     params.permit(
