@@ -1,7 +1,10 @@
 require_relative 'create_postcard'
 require_relative 'address_extractor'
+require_relative 'email_helper'
 
 class SendgridPostHandler
+  include EmailHelper
+
   def initialize(params)
     @params = params
   end
@@ -28,6 +31,15 @@ class SendgridPostHandler
       return
     end
 
+    # For all other requests, check if user is verified
+    from_email = extract_email_from_sendgrid_from(@params[:from])
+    user = User.find_by(email: from_email)
+
+    unless user&.verified?
+      Rails.logger.info "SendgridPostHandler user not verified: #{from_email}"
+      return
+    end
+
     handle_mail_postcard_request
   end
 
@@ -35,7 +47,7 @@ class SendgridPostHandler
 
   def handle_signup_request
     # Extract email from from field
-    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
+    from_email = extract_email_from_sendgrid_from(@params[:from])
     
     # Check if user already exists
     if User.exists?(email: from_email)
@@ -117,11 +129,13 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler dryrun: #{dryrun}"
     resp = CreatePostcard.new(from_address, to_address, image_url, subject, dryrun: dryrun).run
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
+    # add verified_at check
+    # Save response to database
   end
 
   def handle_adduser_request
     # Extract email from from field and find user
-    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
+    from_email = extract_email_from_sendgrid_from(@params[:from])
     user = User.find_by(email: from_email)
     
     unless user
@@ -152,7 +166,7 @@ class SendgridPostHandler
 
   def lookup_user_and_address
     # Extract email from from field and find user
-    from_email = @params[:from].match(/<([^<>]+)>/)&.captures&.first
+    from_email = extract_email_from_sendgrid_from(@params[:from])
     user = User.find_by(email: from_email)
     
     unless user
