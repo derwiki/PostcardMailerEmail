@@ -1,0 +1,57 @@
+{
+	"Event": "NewPrintObject",
+	"Object": "Postcard",
+	"Data": [
+		{
+			"PrintRecord": "f3ae2945-2d78-4a54-9a16-a347d26c4e22",
+			"Created": "2025-04-21T04:04:12+0000",
+			"Canceled": false,
+			"Status": "Pre-Production",
+			"Description": "2025-04-21 04:04:12 +0000 Postcardmailer.us => Edie Derewecki",
+			"Medium": "Postcard",
+			"Size": "4.25x6",
+			"MailingDate": "2025-04-21T00:00:00+0000",
+			"Front": "<html>\n\n<head>\n    <meta charset='UTF-8'>\n    <link href='https://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet'>\n    <style>\n        *, *:before, *:after {\n          -webkit-box-sizing: border-box;\n          -moz-box-sizing: border-box;\n          box-sizing: border-box;\n        }\n        body {\n          width: 6.25in;\n          height: 4.5in;\n          margin: 0;\n          padding: 0;\n        }\n        #safe-area {\n          position: absolute;\n          width: 5.875in;\n          height: 3.875in;\n          left: 0.1875in;\n          top: 0.1875in;\n        }\n        #present {\n          background-image: url();\n          background-size: 6.25in 1.5in;\n          width:6.25in;\n          height:1.5in;\n        }\n        #message-to-customer {\n          position: absolute;\n          width: 2.0in;\n          font-family: sans-serif;\n          font-size: 0.18in;\n        }\n        #message {\n          position: absolute;\n          left: 2.5in;\n          top: 1.5in;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n        #border {\n          position: absolute;\n          left: 2.25in;\n          top: 1.875in;\n          width: 4.25in;\n          height: 2.5in;\n          border: 1px black dashed;\n          font-family: sans-serif;\n          font-size: 0.12in;\n        }\n\n\n    </style>\n</head>\n\n<body>\n    <div id='present'> </div>\n    <div id='safe-area'>\n        <div id='message-to-customer'><p>Elodie enjoyed coloring her Easter card!</p>\n\n<p>April 21st, 2025</p></div>\n        <div id='message'>Brighten someone's day, send a free postcard at postcardmailer.us</div>\n        <div id='border'>&nbsp;</div>\n    </div>\n</body>\n\n</html>\n",
+			"Back": "<html><body style='width: 1875px; height: 1350px; background: url(https://s3.amazonaws.com/postcardmailer.us/c1fd8db1-35e1-4217-aafe-88950da56628.jpg); background-size: cover' /></html>",
+			"VariablePayload": null,
+			"PdfPages": null,
+			"PrintPages": null,
+			"Duplex": null,
+			"BlankFirstPage": null,
+			"Cost": 0.68,
+			"DryRun": false,
+			"RenderedPdf": "https://dmprint.s3.us-west-2.amazonaws.com/assets/2c896975381a90550fd77986fc1fc4daec2c6cd27a46c03adb0fa36b4e12925f.pdf?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=56e270fa51630b247e173dcca288f3f85dcafc30a8213afa15a82d36758cd9fe",
+			"PostalCarrier": "USPS",
+			"PostalClass": "First Class",
+			"To": {
+				"Name": "Edie Derewecki",
+				"AddressLine1": "609 Cambridge Road",
+				"AddressLine2": "",
+				"City": "Coshocton",
+				"State": "OH",
+				"Zip": "43812"
+			},
+			"From": {
+				"Name": "Postcardmailer.us",
+				"AddressLine1": "1198 S Van Ness Ave #80417",
+				"AddressLine2": "",
+				"City": "San Francisco",
+				"State": "CA",
+				"Zip": "94110"
+			},
+			"FrontThumbnails": {
+				"Small": "https://dmprint.s3.us-west-2.amazonaws.com/assets/19363f0dddfb7379fd74e1090d078ba35bb9f04a88b9e145a5dd4484c1362a26.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=c04f1d6785c30c5e9271dfb2ee36e453e58cee6a8e31d7de22697b78c3709304",
+				"Medium": "https://dmprint.s3.us-west-2.amazonaws.com/assets/cbc42685dbc70e270cc6dfd149ff72b9bde2a2a3fe663853236495da525ec603.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=b0f0406ba17481b1e59888ba830d86da7cb54628a0ebdbd68612aae67a28eb36",
+				"Large": "https://dmprint.s3.us-west-2.amazonaws.com/assets/653e89f9246e840de4b14cd3c0a85dbdd982452d80d6175323c5117fa90acbb2.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=f41f719169dd1e0cd398c644840e2f25d0aafe677c5fad66c490fc5973993b27"
+			},
+			"BackThumbnails": {
+				"Small": "https://dmprint.s3.us-west-2.amazonaws.com/assets/fbbdf4909b1efedbcf9b72fc9aca80fb8c9fd84b5920de9e101be2058c8d3e4c.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=cafb3a21c42682f5bf9bccf88d48bf0b26addc439f57a99018ce2ee1b1460bd8",
+				"Medium": "https://dmprint.s3.us-west-2.amazonaws.com/assets/3fc96f2b01b3cdff599db196e4603ada0375c52373cb44e55b903f8338f15ab0.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=417c6f92c6cdf45b6be1083929da41ebfc02f276416e328488c3d1f697a1333d",
+				"Large": "https://dmprint.s3.us-west-2.amazonaws.com/assets/8e7b237fe46ca8ea7e76e92984e054b07edf05c6b5b2e7cf637907ec87a3e3ce.jpg?X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAUVQXGQIOFLBSHNUJ%2F20250421%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20250421T040415Z&X-Amz-SignedHeaders=host&X-Amz-Expires=518400&X-Amz-Signature=b68b4853ee40daa4198858900e94e8674c699edd8bed380b347f8d6dbf4e6639"
+			},
+			"TrackingEvents": [],
+			"EstimatedDeliveryDate": "2025-04-26T00:00:00+0000",
+			"ActualDeliveryDate": null
+		}
+	]
+}

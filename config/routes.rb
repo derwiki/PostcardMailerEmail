@@ -13,4 +13,7 @@ Rails.application.routes.draw do
   # root "posts#index"
 
   post '/sendgrid', to: 'sendgrid#create'
+
+  # Direct Mailer Webhook
+  post '/webhook', to: 'directmailer#webhook'
 end
