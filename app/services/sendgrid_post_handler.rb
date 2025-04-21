@@ -149,16 +149,19 @@ class SendgridPostHandler
       return
     end
 
-    # Extract address from subject line
-    name, address = AddressExtractor.extract(@params[:subject])
+    # Extract nickname from subject line
+    nickname = @params[:subject].strip
+
+    # Extract address from body
+    name, address = AddressExtractor.extract(@params[:text])
     unless address
-      Rails.logger.info "SendgridPostHandler could not parse address from subject"
+      Rails.logger.info "SendgridPostHandler could not parse address from body"
       return
     end
 
     # Create new address
     new_address = user.addresses.create!(
-      nickname: name.split.first.downcase,
+      nickname: nickname,
       name: name,
       address1: address.street,
       address2: address.unit,
@@ -173,6 +176,7 @@ class SendgridPostHandler
   def lookup_user_and_address
     # Extract email from from field and find user
     from_email = extract_email_from_sendgrid_from(@params[:from])
+    Rails.logger.info "SendgridPostHandler looking up user with email: #{from_email}"
     user = User.find_by(email: from_email)
     
     unless user
@@ -182,6 +186,7 @@ class SendgridPostHandler
     
     # Extract nickname from to address and find address
     nickname = @params[:to].split("@").first
+    Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
     
     unless address

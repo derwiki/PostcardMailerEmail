@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SendgridPostHandler do
   include FactoryBot::Syntax::Methods
 
-  let(:user) { create(:user, email: 'test@example.com') }
+  let(:user) { create(:user, email: 'test@example.com', verified_at: Time.current) }
   let(:address) { create(:address, user: user, nickname: 'test') }
   let(:params) do
     {
@@ -61,7 +61,9 @@ RSpec.describe SendgridPostHandler do
           },
           "https://s3.amazonaws.com/postcardmailer.us/test-uuid.jpg",
           "Test Subject\n\nApril 16th, 2025",
-          dryrun: false
+          dryrun: false,
+          user: user,
+          address: address
         )
       end
     end
@@ -165,8 +167,8 @@ RSpec.describe SendgridPostHandler do
         {
           from: 'Test User <test@example.com>',
           to: 'adduser@postcardmailer.us',
-          text: 'Test body text',
-          subject: 'New Address User'
+          subject: 'home',
+          text: 'New Address User\n123 Test St, Test City, CA 94110'
         }
       end
 
@@ -186,7 +188,7 @@ RSpec.describe SendgridPostHandler do
 
         new_address = Address.last
         expect(new_address.user).to eq(user)
-        expect(new_address.nickname).to eq('new')
+        expect(new_address.nickname).to eq('home')
         expect(new_address.name).to eq('New Address User')
         expect(new_address.address1).to eq('123 Test St')
         expect(new_address.city).to eq('Test City')
