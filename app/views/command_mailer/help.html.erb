@@ -1,121 +1,77 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-      }
-      h1, h2, h3 {
-        color: #0066cc;
-      }
-      .command {
-        background-color: #f5f5f5;
-        padding: 15px;
-        border-radius: 5px;
-        margin-bottom: 20px;
-      }
-      .command h3 {
-        margin-top: 0;
-      }
-      .steps {
-        margin-left: 20px;
-      }
-      .footer {
-        margin-top: 30px;
-        padding-top: 15px;
-        border-top: 1px solid #ddd;
-        font-size: 0.8em;
-        color: #666;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="content">
-      <p>Hello <%= @email %>,</p>
-      <p>Re: <%= @subject %></p>
-      <h2>WELCOME TO POSTCARDMAILER.US!</h2>
-    
-    <p>Hello <%= @email %>,</p>
-    
-    <p>Thank you for requesting help with PostcardMailer.us. Below you'll find instructions for using our service through email commands.</p>
-    
-    <h2>Available Commands</h2>
-    
-    <div class="command">
-      <h3>1. Sign Up</h3>
-      <p>To create a new account:</p>
-      <ol class="steps">
-        <li>Send an email to <strong>signup@postcardmailer.us</strong></li>
-        <li>Include your <strong>full name</strong> in the subject line</li>
-        <li>In the email body, include your complete mailing address (street, city, state, ZIP)</li>
-      </ol>
-      <p>Example:<br>
-        To: signup@postcardmailer.us<br>
-        Subject: John Smith<br>
-        Body: 123 Main Street<br>
-        San Francisco, CA 94110
-      </p>
-    </div>
-    
-    <div class="command">
-      <h3>2. Add an Address</h3>
-      <p>To add a new address to your account:</p>
-      <ol class="steps">
-        <li>Send an email to <strong>adduser@postcardmailer.us</strong></li>
-        <li>Include a <strong>nickname</strong> for this address in the subject line</li>
-        <li>In the email body, include the recipient's name and address</li>
-      </ol>
-      <p>Example:<br>
-        To: adduser@postcardmailer.us<br>
-        Subject: mom<br>
-        Body: Jane Smith<br>
-        456 Oak Avenue<br>
-        Chicago, IL 60601
-      </p>
-      <p><em>Note: Our AI-powered address parser will automatically standardize and validate the address format to ensure accurate delivery through the US Postal Service.</em></p>
-    </div>
-    
-    <div class="command">
-      <h3>3. Send a Postcard</h3>
-      <p>To send a postcard to someone in your address book:</p>
-      <ol class="steps">
-        <li>Send an email to <strong>$nickname@postcardmailer.us</strong></li>
-        <li>Use the subject line for the <strong>message</strong> to the recipient</li>
-        <li>Attach the <strong>image</strong> you want to use for the postcard</li>
-      </ol>
-      <p>Example:<br>
-        To: mom@postcardmailer.us<br>
-        Subject: Had a great time in San Francisco!<br>
-        Attachment: vacation-photo.jpg
-      </p>
-    </div>
-    
-    <div class="command">
-      <h3>4. Get Help</h3>
-      <p>To receive these instructions again:</p>
-      <ol class="steps">
-        <li>Send an email to <strong>help@postcardmailer.us</strong></li>
-      </ol>
-    </div>
-    
-    <h2>Important Notes</h2>
-    <ul>
-      <li>New accounts require verification before you can send postcards</li>
-      <li>Make sure addresses are complete and formatted correctly</li>
-      <li>Image attachments should be clear and high resolution for best results</li>
-      <li>The subject line is used to identify the recipient by their nickname</li>
-    </ul>
-    
-    <p>If you have any other questions or need assistance, please reply to this email.</p>
-    
-    <div class="footer">
-      <p>&copy; <%= Date.today.year %> PostcardMailer.us</p>
-    </div>
-  </body>
-</html> 
+<% content_for :title do %>PostcardMailer.us Help<% end %>
+
+<p style="margin: 0 0 1em 0;">Hello <%= @email %>,</p>
+<p style="margin: 0 0 1em 0;">Re: <%= @subject %></p>
+
+<h2 style="color: #0066cc; margin-top: 1.5em;">WELCOME TO POSTCARDMAILER.US!</h2>
+
+<p style="margin: 0 0 1em 0;">Thank you for requesting help with PostcardMailer.us. Below you'll find instructions for using our service through email commands.</p>
+
+<h2 style="color: #0066cc; margin-top: 1.5em;">Available Commands</h2>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+  <h3 style="margin-top: 0; color: #0066cc;">1. Sign Up</h3>
+  <p style="margin: 0 0 1em 0;">To create a new account:</p>
+  <ol style="margin-left: 20px;">
+    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;">signup@postcardmailer.us</strong></li>
+    <li style="margin-bottom: 0.5em;">Include your <strong style="color: #000;">full name</strong> in the subject line</li>
+    <li style="margin-bottom: 0.5em;">In the email body, include your complete mailing address (street, city, state, ZIP)</li>
+  </ol>
+  <p style="margin: 0 0 1em 0;">Example:<br>
+    To: signup@postcardmailer.us<br>
+    Subject: John Smith<br>
+    Body: 123 Main Street<br>
+    San Francisco, CA 94110
+  </p>
+</div>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+  <h3 style="margin-top: 0; color: #0066cc;">2. Add an Address</h3>
+  <p style="margin: 0 0 1em 0;">To add a new address to your account:</p>
+  <ol style="margin-left: 20px;">
+    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;">adduser@postcardmailer.us</strong></li>
+    <li style="margin-bottom: 0.5em;">Include a <strong style="color: #000;">nickname</strong> for this address in the subject line</li>
+    <li style="margin-bottom: 0.5em;">In the email body, include the recipient's name and address</li>
+  </ol>
+  <p style="margin: 0 0 1em 0;">Example:<br>
+    To: adduser@postcardmailer.us<br>
+    Subject: mom<br>
+    Body: Jane Smith<br>
+    456 Oak Avenue<br>
+    Chicago, IL 60601
+  </p>
+  <p style="margin: 0 0 1em 0;"><em style="color: #666;">Note: Our AI-powered address parser will automatically standardize and validate the address format to ensure accurate delivery through the US Postal Service.</em></p>
+</div>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+  <h3 style="margin-top: 0; color: #0066cc;">3. Send a Postcard</h3>
+  <p style="margin: 0 0 1em 0;">To send a postcard to someone in your address book:</p>
+  <ol style="margin-left: 20px;">
+    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;">$nickname@postcardmailer.us</strong></li>
+    <li style="margin-bottom: 0.5em;">Use the subject line for the <strong style="color: #000;">message</strong> to the recipient</li>
+    <li style="margin-bottom: 0.5em;">Attach the <strong style="color: #000;">image</strong> you want to use for the postcard</li>
+  </ol>
+  <p style="margin: 0 0 1em 0;">Example:<br>
+    To: mom@postcardmailer.us<br>
+    Subject: Had a great time in San Francisco!<br>
+    Attachment: vacation-photo.jpg
+  </p>
+</div>
+
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+  <h3 style="margin-top: 0; color: #0066cc;">4. Get Help</h3>
+  <p style="margin: 0 0 1em 0;">To receive these instructions again:</p>
+  <ol style="margin-left: 20px;">
+    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;">help@postcardmailer.us</strong></li>
+  </ol>
+</div>
+
+<h2 style="color: #0066cc; margin-top: 1.5em;">Important Notes</h2>
+<ul style="margin-left: 20px;">
+  <li style="margin-bottom: 0.5em;">New accounts require verification before you can send postcards</li>
+  <li style="margin-bottom: 0.5em;">Make sure addresses are complete and formatted correctly</li>
+  <li style="margin-bottom: 0.5em;">Image attachments should be clear and high resolution for best results</li>
+  <li style="margin-bottom: 0.5em;">The subject line is used to identify the recipient by their nickname</li>
+</ul>
+
+<p style="margin: 0 0 1em 0;">If you have any other questions or need assistance, please reply to this email.</p> 

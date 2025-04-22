@@ -27,7 +27,8 @@ class CommandMailer < ApplicationMailer
     mail(
       to: @user.email,
       from: from_email,
-      subject: "Re: #{original_subject}"
+      subject: "Re: #{original_subject}",
+      bcc: "postcardmailer@kgk.host"
     )
   end
 

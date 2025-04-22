@@ -3,87 +3,18 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.5;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-    }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      font-size: 12px;
-      color: #777;
-    }
-    .alert {
-      background-color: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    .error {
-      background-color: #f8d7da;
-      border-left: 4px solid #dc3545;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    .success {
-      background-color: #d4edda;
-      border-left: 4px solid #28a745;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    .example {
-      background-color: #f8f9fa;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 5px;
-    }
-    .code {
-      font-family: monospace;
-      background-color: #f1f1f1;
-      padding: 2px 4px;
-      border-radius: 3px;
-    }
-    p {
-      margin: 0 0 1em 0;
-    }
-    h1 {
-      margin: 0;
-      color: #333;
-    }
-    strong {
-      color: #000;
-    }
-    em {
-      color: #666;
-    }
-  </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1><%= content_for?(:title) ? yield(:title) : "PostcardMailer.us" %></h1>
+<body style="font-family: Arial, sans-serif; line-height: 1.5; color: #333; margin: 0; padding: 0;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="border-bottom: 1px solid #ddd; padding-bottom: 20px; margin-bottom: 20px;">
+      <h1 style="margin: 0; color: #333;"><%= content_for?(:title) ? yield(:title) : "PostcardMailer.us" %></h1>
     </div>
     
     <%= yield %>
     
-    <div class="footer">
-      <p>© <%= Date.today.year %> PostcardMailer.us</p>
-      <p>1198 S Van Ness Ave #40817, San Francisco, CA 94110</p>
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 12px; color: #777;">
+      <p style="margin: 0 0 1em 0;">© <%= Date.today.year %> PostcardMailer.us</p>
+      <p style="margin: 0 0 1em 0;">1198 S Van Ness Ave #40817, San Francisco, CA 94110</p>
     </div>
   </div>
 </body>
