@@ -3,15 +3,17 @@ require 'rails_helper'
 RSpec.describe "Email Template Rendering", type: :view do
   describe 'PostcardLifecycleMailer template rendering' do
     # Create objects directly without factories
-    let(:user) { double("User", email: 'test@example.com') }
+    let(:user) { double("User", email: 'test@example.com', addresses: []) }
     
     let(:address) do
       double("Address", 
-        name: "Test Recipient",
+        name: "John Doe",
         address1: "123 Main St",
+        address2: nil,
         city: "San Francisco",
         state: "CA",
-        postal_code: "94110"
+        postal_code: "94103",
+        nickname: "home"
       )
     end
     

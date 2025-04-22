@@ -85,6 +85,10 @@ class SendgridPostHandler
     )
 
     Rails.logger.info "SendgridPostHandler created new user and address: #{new_address.inspect}"
+
+    # Send signup confirmation email with original subject for threading
+    CommandMailer.signup(user, @params[:subject]).deliver_now
+    Rails.logger.info "SendgridPostHandler sent signup confirmation email to: #{user.email}"
   end
 
   def handle_mail_postcard_request
@@ -173,6 +177,10 @@ class SendgridPostHandler
     )
 
     Rails.logger.info "SendgridPostHandler created new address: #{new_address.inspect}"
+
+    # Send adduser confirmation email with original subject for threading
+    CommandMailer.adduser(user, from_email, @params[:subject]).deliver_now
+    Rails.logger.info "SendgridPostHandler sent adduser confirmation email to: #{from_email}"
   end
 
   def lookup_user_and_address

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      font-size: 12px;
+      color: #777;
+    }
+    .important {
+      background-color: #f8f9fa;
+      border-left: 4px solid #6c757d;
+      padding: 15px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Welcome to PostcardMailer.us!</h1>
+    </div>
+    
+    <p>Hello <%= @user.email %>,</p>
+    
+    <p>Thank you for signing up with PostcardMailer.us. We're excited to have you on board!</p>
+    
+    <div class="important">
+      <p><strong>Important:</strong> Your account requires manual verification before you can send postcards. This helps us maintain the quality of our service and prevent misuse.</p>
+      
+      <p>We'll review your account shortly and send you a verification confirmation email once approved.</p>
+    </div>
+    
+    <p>In the meantime, you can set up your address book and explore the features available in your account.</p>
+    
+    <p>If you have any questions or need assistance, please reply to this email.</p>
+    
+    <div class="footer">
+      <p>© <%= Date.today.year %> PostcardMailer.us</p>
+    </div>
+  </div>
+</body>
+</html>

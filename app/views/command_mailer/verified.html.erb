@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.5;
+      color: #333;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .header {
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+      margin-bottom: 20px;
+    }
+    .footer {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      font-size: 12px;
+      color: #777;
+    }
+    .success {
+      background-color: #e8f4f8;
+      border-left: 4px solid #17a2b8;
+      padding: 15px;
+      margin: 20px 0;
+    }
+    .example {
+      background-color: #f8f9fa;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 5px;
+    }
+    .code {
+      font-family: monospace;
+      background-color: #f1f1f1;
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Your Account is Verified!</h1>
+    </div>
+    
+    <p>Hello <%= @user.email %>,</p>
+    
+    <div class="success">
+      <p><strong>Good news!</strong> Your PostcardMailer.us account has been verified, and you can now send postcards!</p>
+    </div>
+    
+    <p>You can send postcards by emailing <strong>send@postcardmailer.us</strong> with the following information:</p>
+    
+    <div class="example">
+      <p><strong>Subject:</strong> [Your postcard message]</p>
+      <p><strong>Body:</strong></p>
+      <p class="code">to: [recipient nickname or full address]</p>
+      <p class="code">image: [attach an image or include a URL to an image]</p>
+    </div>
+    
+    <p>For example, you could send:</p>
+    
+    <div class="example">
+      <p><strong>Subject:</strong> Greetings from San Francisco!</p>
+      <p><strong>Body:</strong></p>
+      <p class="code">to: mom</p>
+      <p>Having a great time in California. The weather is beautiful and the food is amazing!</p>
+      <p><em>[Attached image of the Golden Gate Bridge]</em></p>
+    </div>
+    
+    <p>If you have any questions or need assistance, please reply to this email.</p>
+    
+    <div class="footer">
+      <p>© <%= Date.today.year %> PostcardMailer.us</p>
+    </div>
+  </div>
+</body>
+</html>
