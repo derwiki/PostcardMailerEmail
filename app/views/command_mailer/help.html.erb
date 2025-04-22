@@ -36,7 +36,10 @@
     </style>
   </head>
   <body>
-    <h1>Welcome to PostcardMailer.us!</h1>
+    <div class="content">
+      <p>Hello <%= @email %>,</p>
+      <p>Re: <%= @subject %></p>
+      <h2>WELCOME TO POSTCARDMAILER.US!</h2>
     
     <p>Hello <%= @email %>,</p>
     
@@ -66,7 +69,7 @@
       <ol class="steps">
         <li>Send an email to <strong>adduser@postcardmailer.us</strong></li>
         <li>Include a <strong>nickname</strong> for this address in the subject line</li>
-        <li>In the email body, include the recipient's name and address - our advanced AI technology will automatically parse and format it to ensure USPS compliance</li>
+        <li>In the email body, include the recipient's name and address</li>
       </ol>
       <p>Example:<br>
         To: adduser@postcardmailer.us<br>
