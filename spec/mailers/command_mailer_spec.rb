@@ -7,7 +7,18 @@ RSpec.describe CommandMailer, type: :mailer do
     let(:recipient_email) { "recipient@example.com" }
     let(:original_subject) { "Add New Contact" }
     let(:from_email) { "adduser@postcardmailer.us" }
-    let(:mail) { CommandMailer.adduser(user, recipient_email, original_subject, from_email) }
+    let(:new_address) do
+      double("Address",
+        name: "John Smith",
+        nickname: "john",
+        address1: "123 Main St",
+        address2: nil,
+        city: "San Francisco",
+        state: "CA",
+        postal_code: "94110"
+      )
+    end
+    let(:mail) { CommandMailer.adduser(user, recipient_email, original_subject, from_email, new_address) }
 
     it "renders the headers" do
       expect(mail.subject).to eq("Re: Add New Contact")
@@ -17,6 +28,9 @@ RSpec.describe CommandMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("Recipient Address Added")
+      expect(mail.body.encoded).to match("John Smith")
+      expect(mail.body.encoded).to match("123 Main St")
+      expect(mail.body.encoded).to match("San Francisco, CA 94110")
     end
   end
 
@@ -32,7 +46,7 @@ RSpec.describe CommandMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("Welcome")
+      expect(mail.body.encoded).to match("WELCOME TO POSTCARDMAILER.US")
     end
   end
 
@@ -47,7 +61,7 @@ RSpec.describe CommandMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("Verified")
+      expect(mail.body.encoded).to match("Great news!")
     end
   end
   
@@ -81,7 +95,7 @@ RSpec.describe CommandMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("WELCOME TO POSTCARDMAILER.US")
-      expect(mail.body.encoded).to match("AVAILABLE COMMANDS")
+      expect(mail.body.encoded).to match("Available Commands")
       expect(mail.body.encoded).to match("SIGN UP")
       expect(mail.body.encoded).to match("ADD AN ADDRESS")
       expect(mail.body.encoded).to match("SEND A POSTCARD")

@@ -4,9 +4,10 @@ class CommandMailer < ApplicationMailer
   #
   #   en.command_mailer.adduser.subject
   #
-  def adduser(user, recipient_email, original_subject, from_email)
+  def adduser(user, recipient_email, original_subject, from_email, new_address)
     @user = user
     @recipient_email = recipient_email
+    @new_address = new_address
 
     mail(
       to: @user.email,
@@ -48,6 +49,7 @@ class CommandMailer < ApplicationMailer
   # Send error notification when a command fails or has issues
   def error(to_address, original_subject, error_message, from_email)
     @error_message = error_message
+    @message = error_message
     @email = to_address
 
     mail(

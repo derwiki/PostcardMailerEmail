@@ -2,9 +2,19 @@ Hello <%= @user.email %>,
 
 RECIPIENT ADDRESS ADDED
 
-We've added <%= @recipient_email %> to your PostcardMailer address book.
+We've added <%= @new_address.name %> to your PostcardMailer address book.
 
-You can now send postcards to this recipient by using this address in the "to:" field of your postcard emails.
+Address Details:
+<%= @new_address.address1 %><% if @new_address.address2.present? %>, <%= @new_address.address2 %><% end %>
+<%= @new_address.city %>, <%= @new_address.state %> <%= @new_address.postal_code %>
+
+You can now send postcards to this recipient by using their nickname "<%= @new_address.nickname %>" in the "to:" field of your postcard emails.
+
+Example:
+To: <%= @new_address.nickname %>@postcardmailer.us
+Subject: Greetings from San Francisco!
+Body: [Your message to <%= @new_address.name %>]
+Attachment: [Your postcard image]
 
 <% unless @user.verified? %>
 NOTE: Your account is still pending verification. While this address has been added to your address book, you'll need to be verified before you can send postcards. We'll notify you once your account has been verified.

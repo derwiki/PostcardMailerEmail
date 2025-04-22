@@ -48,9 +48,23 @@
     
     <p>Hello <%= @user.email %>,</p>
     
-    <p>We've added <strong><%= @recipient_email %></strong> to your PostcardMailer address book.</p>
+    <p>We've added <strong><%= @new_address.name %></strong> to your PostcardMailer address book.</p>
 
-    <p>You can now send postcards to this recipient by using this address in the "to:" field of your postcard emails.</p>
+    <div class="address-details">
+      <p><strong>Address Details:</strong><br>
+      <%= @new_address.address1 %><% if @new_address.address2.present? %>, <%= @new_address.address2 %><% end %><br>
+      <%= @new_address.city %>, <%= @new_address.state %> <%= @new_address.postal_code %></p>
+    </div>
+
+    <p>You can now send postcards to this recipient by using their nickname "<strong><%= @new_address.nickname %></strong>" in the "to:" field of your postcard emails.</p>
+    
+    <div class="example">
+      <h3>Example:</h3>
+      <p><strong>To:</strong> <%= @new_address.nickname %>@postcardmailer.us<br>
+      <strong>Subject:</strong> Greetings from San Francisco!<br>
+      <strong>Body:</strong> [Your message to <%= @new_address.name %>]<br>
+      <strong>Attachment:</strong> [Your postcard image]</p>
+    </div>
     
     <% unless @user.verified? %>
     <div class="alert">

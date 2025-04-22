@@ -265,7 +265,7 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler created new address: #{new_address.inspect}"
     
     # Send adduser confirmation email with original subject for threading
-    CommandMailer.adduser(user, @from_email, @params[:subject], @params[:to]).deliver_now
+    CommandMailer.adduser(user, @from_email, @params[:subject], @params[:to], new_address).deliver_now
     Rails.logger.info "SendgridPostHandler sent adduser confirmation email to: #{@from_email}"
   end
 
