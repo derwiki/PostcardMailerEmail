@@ -1,93 +1,28 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.5;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-    }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      font-size: 12px;
-      color: #777;
-    }
-    .success {
-      background-color: #d4edda;
-      border-left: 4px solid #28a745;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    .example {
-      background-color: #f8f9fa;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 5px;
-    }
-    .code {
-      font-family: monospace;
-      background-color: #f1f1f1;
-      padding: 2px 4px;
-      border-radius: 3px;
-    }
-    p {
-      margin: 0 0 1em 0;
-    }
-  </style>
-</head>
+<% content_for :title do %>Account Verified<% end %>
 
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Account Verified</h1>
-    </div>
-    
-    <p>Hello <%= @user.email %>,</p>
-    
-    <div class="success">
-      <p><strong>Great news!</strong> Your account has been verified. You can now start sending postcards!</p>
-    </div>
-    
-    <p>You can send postcards by emailing <strong>send@postcardmailer.us</strong> with the following information:</p>
+<p>Hello <%= @user.email %>,</p>
 
-    <div class="example">
-      <p><strong>Subject:</strong> [Your postcard message]</p>
-      <p><strong>Body:</strong></p>
-      <p class="code">to: [recipient nickname or full address]</p>
-      <p class="code">image: [attach an image or include a URL to an image]</p>
-    </div>
+<div class="success">
+  <p><strong>Great news!</strong> Your account has been verified. You can now start sending postcards!</p>
+</div>
 
-    <p>For example, you could send:</p>
+<p>You can send postcards by emailing <strong>send@postcardmailer.us</strong> with the following information:</p>
 
-    <div class="example">
-      <p><strong>Subject:</strong> Greetings from San Francisco!</p>
-      <p><strong>Body:</strong></p>
-      <p class="code">to: mom</p>
-      <p>Having a great time in California. The weather is beautiful and the food is amazing!</p>
-      <p><em>[Attached image of the Golden Gate Bridge]</em></p>
-    </div>
-    
-    <p>If you have any questions, please contact support.</p>
-    
-    <div class="footer">
-      <p>© <%= Date.today.year %> PostcardMailer.us</p>
-    </div>
-  </div>
-</body>
-</html>
+<div class="example">
+  <p><strong>Subject:</strong> [Your postcard message]</p>
+  <p><strong>Body:</strong></p>
+  <p class="code">to: [recipient nickname or full address]</p>
+  <p class="code">image: [attach an image or include a URL to an image]</p>
+</div>
+
+<p>For example, you could send:</p>
+
+<div class="example">
+  <p><strong>Subject:</strong> Greetings from San Francisco!</p>
+  <p><strong>Body:</strong></p>
+  <p class="code">to: mom</p>
+  <p>Having a great time in California. The weather is beautiful and the food is amazing!</p>
+  <p><em>[Attached image of the Golden Gate Bridge]</em></p>
+</div>
+
+<p>If you have any questions, please contact support.</p> 

@@ -1,64 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.5;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .header {
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 20px;
-      margin-bottom: 20px;
-    }
-    .footer {
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #ddd;
-      font-size: 12px;
-      color: #777;
-    }
-    .alert {
-      background-color: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-    }
-    p {
-      margin: 0 0 1em 0;
-    }
-  </style>
-</head>
+<% content_for :title do %>Welcome to PostcardMailer.us!<% end %>
 
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>Welcome to PostcardMailer.us!</h1>
-    </div>
-    
-    <p>Hello <%= @user.email %>,</p>
-    
-    <p>Thank you for signing up with PostcardMailer.us! We're excited to have you on board.</p>
-    
-    <div class="alert">
-      <p><strong>Note:</strong> Your account is pending verification. We'll notify you once your account has been verified and you can start sending postcards.</p>
-    </div>
-    
-    <p>In the meantime, you can add more addresses to your address book by sending an email to adduser@postcardmailer.us.</p>
-    
-    <div class="footer">
-      <p>© <%= Date.today.year %> PostcardMailer.us</p>
-    </div>
-  </div>
-</body>
-</html>
+<p>Hello <%= @user.email %>,</p>
+
+<p>Thank you for signing up with PostcardMailer.us! We're excited to have you on board.</p>
+
+<div class="alert">
+  <p><strong>Note:</strong> Your account is pending verification. We'll notify you once your account has been verified and you can start sending postcards.</p>
+</div>
+
+<p>In the meantime, you can add more addresses to your address book by sending an email to adduser@postcardmailer.us.</p> 
