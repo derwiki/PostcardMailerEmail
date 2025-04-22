@@ -14,8 +14,18 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler params.keys: #{@params.keys}"
 
     bodytext = @params[:text]
+    from_email = extract_email_from_sendgrid_from(@params[:from])
+
     if !bodytext
       Rails.logger.info "SendgridPostHandler empty body"
+      # Extract from email to send an error notification
+      CommandMailer.error(
+        from_email,
+        "Empty Email Body",
+        "Your email did not contain any text content. Please include the necessary information in your email body.",
+        @params[:to] || "help@postcardmailer.us"
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'empty body' error email to: #{from_email}"
       return
     end
 
@@ -32,11 +42,29 @@ class SendgridPostHandler
     end
 
     # For all other requests, check if user is verified
-    from_email = extract_email_from_sendgrid_from(@params[:from])
     user = User.find_by(email: from_email)
 
-    unless user&.verified?
+    unless user
+      Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
+      CommandMailer.error(
+        from_email,
+        @params[:subject],
+        "We couldn't find an account with your email address. Please sign up first by sending an email to signup@postcardmailer.us.",
+        @params[:to] || "help@postcardmailer.us"
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'user not found' error email to: #{from_email}"
+      return
+    end
+    
+    unless user.verified?
       Rails.logger.info "SendgridPostHandler user not verified: #{from_email}"
+      CommandMailer.error(
+        from_email,
+        @params[:subject], 
+        "Your account is pending verification. We'll notify you once your account has been verified and you can start sending postcards.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'not verified' error email to: #{from_email}"
       return
     end
 
@@ -52,6 +80,13 @@ class SendgridPostHandler
     # Check if user already exists
     if User.exists?(email: from_email)
       Rails.logger.info "SendgridPostHandler user already exists: #{from_email}"
+      CommandMailer.error(
+        from_email,
+        @params[:subject], 
+        "An account with this email already exists. If you've forgotten your password, please use the password reset option on the website.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'user already exists' error email to: #{from_email}"
       return
     end
 
@@ -59,6 +94,13 @@ class SendgridPostHandler
     name = @params[:subject].strip
     if name.empty?
       Rails.logger.info "SendgridPostHandler empty name in subject"
+      CommandMailer.error(
+        from_email,
+        "Signup Error",
+        "Please include your full name in the subject line when signing up.",
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'empty name' error email to: #{from_email}"
       return
     end
 
@@ -69,6 +111,13 @@ class SendgridPostHandler
     extracted_name, address = AddressExtractor.extract(body_with_name)
     unless address
       Rails.logger.info "SendgridPostHandler could not parse address from body"
+      CommandMailer.error(
+        from_email,
+        @params[:subject],
+        "We couldn't parse a valid address from your email. Please include your complete mailing address (street, city, state, and ZIP code) in the email body.",
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'invalid address' error email to: #{from_email}"
       return
     end
 
@@ -85,9 +134,10 @@ class SendgridPostHandler
     )
 
     Rails.logger.info "SendgridPostHandler created new user and address: #{new_address.inspect}"
-
+    
     # Send signup confirmation email with original subject for threading
-    CommandMailer.signup(user, @params[:subject]).deliver_now
+    # Use the original 'to' email as the from address for proper threading
+    CommandMailer.signup(user, @params[:subject], @params[:to]).deliver_now
     Rails.logger.info "SendgridPostHandler sent signup confirmation email to: #{user.email}"
   end
 
@@ -101,6 +151,13 @@ class SendgridPostHandler
 
     if !@params[:attachment1]
       Rails.logger.info "SendgridPostHandler missing attachment"
+      CommandMailer.error(
+        user.email,
+        @params[:subject], 
+        "Your email is missing an image attachment. Please attach an image to your email to create a postcard.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'missing attachment' error email to: #{user.email}"
       return
     end
 
@@ -152,16 +209,55 @@ class SendgridPostHandler
     
     unless user
       Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
+      CommandMailer.error(
+        from_email,
+        @params[:subject],
+        "We couldn't find an account with your email address. Please sign up first by sending an email to signup@postcardmailer.us.",
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'user not found' error email to: #{from_email}"
       return
     end
 
     # Extract nickname from subject line
     nickname = @params[:subject].strip
+    if nickname.empty?
+      Rails.logger.info "SendgridPostHandler empty nickname in subject"
+      CommandMailer.error(
+        from_email,
+        "Add New Address", 
+        "Please provide a nickname for this address in the subject line of your email.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'empty nickname' error email to: #{user.email}"
+      return
+    end
+
+    # Check if nickname already exists for this user
+    if user.addresses.exists?(nickname: nickname)
+      Rails.logger.info "SendgridPostHandler nickname already exists for user: #{nickname}"
+      CommandMailer.error(
+        from_email,
+        @params[:subject], 
+        "You already have an address with the nickname '#{nickname}'. Please choose a different nickname.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent 'nickname exists' error email to: #{user.email}"
+      return
+    end
 
     # Extract address from body
     name, address = AddressExtractor.extract(@params[:text])
     unless address
       Rails.logger.info "SendgridPostHandler could not parse address from body"
+      # Send error message with original subject and to email for threading
+      CommandMailer.error(
+        from_email,
+        @params[:subject], 
+        "Could not parse a valid address from your email. Please include a complete mailing address with street, city, state, and ZIP code.", 
+        @params[:to]
+      ).deliver_now
+      Rails.logger.info "SendgridPostHandler sent error email to: #{user.email}"
       return
     end
 
@@ -177,9 +273,10 @@ class SendgridPostHandler
     )
 
     Rails.logger.info "SendgridPostHandler created new address: #{new_address.inspect}"
-
+    
     # Send adduser confirmation email with original subject for threading
-    CommandMailer.adduser(user, from_email, @params[:subject]).deliver_now
+    # Use the original 'to' email as the from address for proper threading
+    CommandMailer.adduser(user, from_email, @params[:subject], @params[:to]).deliver_now
     Rails.logger.info "SendgridPostHandler sent adduser confirmation email to: #{from_email}"
   end
 
@@ -201,6 +298,16 @@ class SendgridPostHandler
     
     unless address
       Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
+      # Send error message with original subject and to email for threading
+      if user.verified?
+        CommandMailer.error(
+          from_email,
+          @params[:subject], 
+          "Address not found for nickname: #{nickname}. Please make sure you're using a valid nickname from your address book.", 
+          @params[:to]
+        ).deliver_now
+        Rails.logger.info "SendgridPostHandler sent error email to: #{user.email}"
+      end
       return [nil, nil]
     end
     

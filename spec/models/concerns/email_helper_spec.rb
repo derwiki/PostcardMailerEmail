@@ -37,30 +37,38 @@ RSpec.describe EmailHelper do
       it { is_expected.to eq 'john@example.com' }
     end
 
-    context 'with invalid formats' do
-      context 'when missing angle brackets' do
-        let(:from_field) { 'john@example.com' }
-        it { is_expected.to be_nil }
-      end
+    context 'with plain email address' do
+      let(:from_field) { 'john@example.com' }
+      it { is_expected.to eq 'john@example.com' }
+    end
 
+    context 'with invalid formats' do
       context 'when empty angle brackets' do
         let(:from_field) { 'John Doe <>' }
-        it { is_expected.to be_nil }
+        it 'raises MissingEmailError' do
+          expect { subject }.to raise_error(EmailHelper::MissingEmailError)
+        end
       end
 
       context 'when nil input' do
         let(:from_field) { nil }
-        it { is_expected.to be_nil }
+        it 'raises MissingEmailError' do
+          expect { subject }.to raise_error(EmailHelper::MissingEmailError)
+        end
       end
 
       context 'when empty string' do
         let(:from_field) { '' }
-        it { is_expected.to be_nil }
+        it 'raises MissingEmailError' do
+          expect { subject }.to raise_error(EmailHelper::MissingEmailError)
+        end
       end
 
       context 'when unmatched brackets' do
         let(:from_field) { 'John Doe <john@example.com' }
-        it { is_expected.to be_nil }
+        it 'raises MissingEmailError' do
+          expect { subject }.to raise_error(EmailHelper::MissingEmailError)
+        end
       end
     end
   end
