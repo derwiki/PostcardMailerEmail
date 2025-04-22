@@ -69,4 +69,23 @@ RSpec.describe CommandMailer, type: :mailer do
       expect(mail.body.encoded).to match("Address could not be parsed from your email")
     end
   end
+
+  describe "help" do
+    let(:mail) { CommandMailer.help("user@example.com", "Help request", "help@postcardmailer.us") }
+
+    it "renders the headers" do
+      expect(mail.subject).to eq("PostcardMailer.us - How to Use Our Service")
+      expect(mail.to).to eq(["user@example.com"])
+      expect(mail.from).to eq(["help@postcardmailer.us"])
+    end
+
+    it "renders the body" do
+      expect(mail.body.encoded).to match("WELCOME TO POSTCARDMAILER.US")
+      expect(mail.body.encoded).to match("AVAILABLE COMMANDS")
+      expect(mail.body.encoded).to match("SIGN UP")
+      expect(mail.body.encoded).to match("ADD AN ADDRESS")
+      expect(mail.body.encoded).to match("SEND A POSTCARD")
+      expect(mail.body.encoded).to match("GET HELP")
+    end
+  end
 end

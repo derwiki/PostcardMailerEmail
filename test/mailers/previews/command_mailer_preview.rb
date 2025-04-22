@@ -50,4 +50,14 @@ class CommandMailerPreview < ActionMailer::Preview
       "help@postcardmailer.us"
     )
   end
+  
+  # Preview this email at http://localhost:3000/rails/mailers/command_mailer/help
+  def help
+    # Call the mailer with appropriate test data
+    CommandMailer.help(
+      "preview@example.com",
+      "Help Request",
+      "help@postcardmailer.us"
+    )
+  end
 end 

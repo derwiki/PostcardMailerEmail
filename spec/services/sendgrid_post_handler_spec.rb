@@ -8,9 +8,9 @@ RSpec.describe SendgridPostHandler do
   let(:params) do
     {
       from: 'Test User <test@example.com>',
-      to: 'test@postcardmailer.us',
+      to: 'any@postcardmailer.us',
       text: 'Test body text',
-      subject: 'Test Subject',
+      subject: 'test',
       attachment1: 'test-image-data'
     }
   end
@@ -60,7 +60,7 @@ RSpec.describe SendgridPostHandler do
             postal_code: address.postal_code
           },
           "https://s3.amazonaws.com/postcardmailer.us/test-uuid.jpg",
-          "Test Subject",
+          "test",
           dryrun: false,
           user: user,
           address: address
@@ -94,9 +94,9 @@ RSpec.describe SendgridPostHandler do
       let(:params) do
         {
           from: 'Test User <test@example.com>',
-          to: 'test@postcardmailer.us',
+          to: 'any@postcardmailer.us',
           text: 'Test body text',
-          subject: 'Test Subject'
+          subject: 'test'
         }
       end
 
@@ -221,6 +221,31 @@ RSpec.describe SendgridPostHandler do
         it 'does not create a new address' do
           expect { handler.process }.to change(Address, :count).by(0)
         end
+      end
+    end
+
+    context 'when handling help request' do
+      let(:params) do
+        {
+          from: 'Test User <test@example.com>',
+          to: 'help@postcardmailer.us',
+          text: 'How do I use this service?',
+          subject: 'Help Request'
+        }
+      end
+
+      before do
+        allow(CommandMailer).to receive_message_chain(:help, :deliver_now)
+      end
+
+      it 'sends a help email to the sender' do
+        handler.process
+        
+        expect(CommandMailer).to have_received(:help).with(
+          'test@example.com',
+          'Help Request',
+          'help@postcardmailer.us'
+        )
       end
     end
   end

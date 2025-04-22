@@ -56,4 +56,15 @@ class CommandMailer < ApplicationMailer
       subject: "Re: #{original_subject}"
     )
   end
+  
+  # Send help instructions for using the service
+  def help(to_address, original_subject, from_email)
+    @email = to_address
+
+    mail(
+      to: to_address,
+      from: from_email,
+      subject: "PostcardMailer.us - How to Use Our Service"
+    )
+  end
 end

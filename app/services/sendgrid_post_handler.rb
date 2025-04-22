@@ -37,6 +37,12 @@ class SendgridPostHandler
       return
     end
 
+    # Check if this is a help request
+    if @params[:to] == "help@postcardmailer.us"
+      handle_help_request
+      return
+    end
+
     handle_mail_postcard_request
   end
 
@@ -105,6 +111,12 @@ class SendgridPostHandler
     )
   end
 
+  def handle_help_request
+    Rails.logger.info "SendgridPostHandler processing help request from: #{@from_email}"
+    CommandMailer.help(@from_email, @params[:subject], @params[:to]).deliver_now
+    Rails.logger.info "SendgridPostHandler sent help email to: #{@from_email}"
+  end
+
   def handle_signup_request
     # Check if user already exists
     if User.exists?(email: @from_email)
@@ -150,11 +162,11 @@ class SendgridPostHandler
   def handle_mail_postcard_request
     user = authenticate_user
     return unless user
-
-    nickname = @params[:to].split("@").first
+    
+    nickname = @params[:subject].strip
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
-
+    
     unless address
       Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
       send_error_email(
@@ -268,8 +280,8 @@ class SendgridPostHandler
       return [nil, nil]
     end
     
-    # Extract nickname from to address and find address
-    nickname = @params[:to].split("@").first
+    # Extract nickname from subject line
+    nickname = @params[:subject].strip
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
     
