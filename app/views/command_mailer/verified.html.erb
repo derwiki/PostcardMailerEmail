@@ -2,16 +2,19 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
       line-height: 1.5;
       color: #333;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
     }
     .container {
       max-width: 600px;
       margin: 0 auto;
+      padding: 20px;
     }
     .header {
       border-bottom: 1px solid #ddd;
@@ -26,8 +29,8 @@
       color: #777;
     }
     .success {
-      background-color: #e8f4f8;
-      border-left: 4px solid #17a2b8;
+      background-color: #d4edda;
+      border-left: 4px solid #28a745;
       padding: 15px;
       margin: 20px 0;
     }
@@ -43,32 +46,35 @@
       padding: 2px 4px;
       border-radius: 3px;
     }
+    p {
+      margin: 0 0 1em 0;
+    }
   </style>
 </head>
 
 <body>
   <div class="container">
     <div class="header">
-      <h1>Your Account is Verified!</h1>
+      <h1>Account Verified</h1>
     </div>
     
     <p>Hello <%= @user.email %>,</p>
     
     <div class="success">
-      <p><strong>Good news!</strong> Your PostcardMailer.us account has been verified, and you can now send postcards!</p>
+      <p><strong>Great news!</strong> Your account has been verified. You can now start sending postcards!</p>
     </div>
     
     <p>You can send postcards by emailing <strong>send@postcardmailer.us</strong> with the following information:</p>
-    
+
     <div class="example">
       <p><strong>Subject:</strong> [Your postcard message]</p>
       <p><strong>Body:</strong></p>
       <p class="code">to: [recipient nickname or full address]</p>
       <p class="code">image: [attach an image or include a URL to an image]</p>
     </div>
-    
+
     <p>For example, you could send:</p>
-    
+
     <div class="example">
       <p><strong>Subject:</strong> Greetings from San Francisco!</p>
       <p><strong>Body:</strong></p>
@@ -77,7 +83,7 @@
       <p><em>[Attached image of the Golden Gate Bridge]</em></p>
     </div>
     
-    <p>If you have any questions or need assistance, please reply to this email.</p>
+    <p>If you have any questions, please contact support.</p>
     
     <div class="footer">
       <p>© <%= Date.today.year %> PostcardMailer.us</p>

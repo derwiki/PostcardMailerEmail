@@ -2,16 +2,19 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       font-family: Arial, sans-serif;
       line-height: 1.5;
       color: #333;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
     }
     .container {
       max-width: 600px;
       margin: 0 auto;
+      padding: 20px;
     }
     .header {
       border-bottom: 1px solid #ddd;
@@ -25,17 +28,14 @@
       font-size: 12px;
       color: #777;
     }
-    .error {
-      background-color: #fff0f0;
+    .alert {
+      background-color: #f8d7da;
       border-left: 4px solid #dc3545;
       padding: 15px;
       margin: 20px 0;
     }
-    .help {
-      background-color: #f8f9fa;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 5px;
+    p {
+      margin: 0 0 1em 0;
     }
   </style>
 </head>
@@ -43,27 +43,16 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>We Encountered an Error</h1>
+      <h1>Error</h1>
     </div>
     
     <p>Hello <%= @email %>,</p>
     
-    <p>We were unable to process your request due to the following error:</p>
-    
-    <div class="error">
-      <p><strong>Error:</strong> <%= @error_message %></p>
+    <div class="alert">
+      <p><strong>Error:</strong> <%= @message %></p>
     </div>
     
-    <div class="help">
-      <h3>Need assistance?</h3>
-      <p>If you're having trouble, here are some common solutions:</p>
-      <ul>
-        <li>Make sure you're using the correct email format and commands</li>
-        <li>Check that all required information is included in your email</li>
-        <li>For adding addresses, ensure the address is formatted correctly</li>
-      </ul>
-      <p>You can reply to this email if you need further help.</p>
-    </div>
+    <p>If you need assistance, please contact support.</p>
     
     <div class="footer">
       <p>© <%= Date.today.year %> PostcardMailer.us</p>
