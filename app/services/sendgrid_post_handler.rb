@@ -12,7 +12,7 @@ class SendgridPostHandler
   def process
     Rails.logger.info "SendgridPostHandler params: #{@params}"
     Rails.logger.info "SendgridPostHandler params.keys: #{@params.keys}"
-    Rails.logger.info "SendgridPostHandler Authentication-Results: #{@params[:headers]&.dig('Authentication-Results')}"
+    Rails.logger.info "SendgridPostHandler headers: #{@params[:headers]}"
 
     bodytext = @params[:text]
     @from_email = extract_email_from_sendgrid_from(@params[:from])
