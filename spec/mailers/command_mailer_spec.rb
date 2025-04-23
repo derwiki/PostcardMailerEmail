@@ -99,7 +99,7 @@ RSpec.describe CommandMailer, type: :mailer do
     let(:mail) { CommandMailer.help("user@example.com", "Help request", "help@postcardmailer.us") }
 
     it "renders the headers" do
-      expect(mail.subject).to eq("PostcardMailer.us - How to Use Our Service")
+      expect(mail.subject).to eq("Re: Help request")
       expect(mail.to).to eq(["user@example.com"])
       expect(mail.from).to eq(["help@postcardmailer.us"])
     end

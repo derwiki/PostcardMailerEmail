@@ -71,7 +71,7 @@ class CommandMailer < ApplicationMailer
     mail(
       to: to_address,
       from: from_email,
-      subject: "PostcardMailer.us - How to Use Our Service"
+      subject: "Re: #{original_subject}"
     )
   end
 end

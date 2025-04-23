@@ -45,6 +45,12 @@ class SendgridPostHandler
       return
     end
 
+    # Check if this is an approve request
+    if @params[:subject].strip.downcase == 'approve' && @from_email == "derewecki@gmail.com"
+      handle_approve_request
+      return
+    end
+
     # Check if this is a signup request
     if @params[:to] == "signup@postcardmailer.us"
       handle_signup_request
@@ -314,6 +320,65 @@ class SendgridPostHandler
     # Send adduser confirmation email with original subject for threading
     CommandMailer.adduser(user, @from_email, @params[:subject], @params[:to], new_address).deliver_now
     Rails.logger.info "SendgridPostHandler sent adduser confirmation email to: #{@from_email}"
+  end
+
+  def handle_approve_request
+    # Verify sender is authorized
+    unless @from_email == "derewecki@gmail.com"
+      Rails.logger.info "SendgridPostHandler unauthorized approve attempt from: #{@from_email}"
+      send_error_email(
+        "Unauthorized",
+        "You are not authorized to use the approve command."
+      )
+      return
+    end
+
+    # Extract user email from the message body
+    user_email = @params[:text].to_s.strip
+    if user_email.empty?
+      Rails.logger.info "SendgridPostHandler empty user email in approve request"
+      send_error_email(
+        "Approve Error",
+        "Please include the user's email address in the email body.",
+        "verified@postcardmailer.us"
+      )
+      return
+    end
+
+    # Find the user
+    user = User.find_by(email: user_email)
+    unless user
+      Rails.logger.info "SendgridPostHandler user not found for approval: #{user_email}"
+      send_error_email(
+        "Approve Error",
+        "User not found with email: #{user_email}",
+        "verified@postcardmailer.us"
+      )
+      return
+    end
+
+    # Approve the user
+    user.update!(verified_at: Time.zone.now)
+    Rails.logger.info "SendgridPostHandler approved user: #{user_email}"
+
+    # Send verification notification to the user
+    CommandMailer.verified(user, "verified@postcardmailer.us").deliver_now
+    Rails.logger.info "SendgridPostHandler sent verification email to: #{user_email}"
+
+    # Send confirmation to admin
+    send_confirmation_email(user)
+  end
+
+  def send_confirmation_email(user)
+    CommandMailer.error(
+      @from_email,
+      "User Approved",
+      "Successfully approved user: #{user.email}",
+      "verified@postcardmailer.us",
+      nil
+    ).deliver_now
+    
+    Rails.logger.info "SendgridPostHandler sent approval confirmation email to: #{@from_email}"
   end
 
   # Maintained for test compatibility
