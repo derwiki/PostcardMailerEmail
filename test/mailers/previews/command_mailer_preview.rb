@@ -4,22 +4,22 @@ class CommandMailerPreview < ActionMailer::Preview
   # Preview this email at http://localhost:3000/rails/mailers/command_mailer/adduser
   def adduser
     # Create or find a user for the preview
-    user = User.first || User.create!(email: "preview@example.com", verified: true)
+    user = User.new(email: "ned.flanders@springfield.com", verified_at: Time.zone.now)
 
     # Create a sample address for the preview
     new_address = Address.new(
-      name: "Jane Smith",
-      nickname: "mom",
-      address1: "123 Main St",
-      city: "San Francisco",
-      state: "CA",
-      postal_code: "94110"
+      name: "Homer Simpson",
+      nickname: "homer",
+      address1: "742 Evergreen Terrace",
+      city: "Springfield",
+      state: "IL",
+      postal_code: "62702"
     )
 
     # Call the mailer with appropriate test data
     CommandMailer.adduser(
       user,
-      "new_user@example.com",
+      "ned.flanders@springfield.com",
       "Adding New Address",
       "adduser@postcardmailer.us",
       new_address
@@ -29,7 +29,7 @@ class CommandMailerPreview < ActionMailer::Preview
   # Preview this email at http://localhost:3000/rails/mailers/command_mailer/signup
   def signup
     # Create or find a user for the preview
-    user = User.first || User.create!(email: "preview@example.com", verified: false)
+    user = User.new(email: "ned.flanders@springfield.com", verified_at: nil)
 
     # Call the mailer with appropriate test data
     CommandMailer.signup(
@@ -42,7 +42,7 @@ class CommandMailerPreview < ActionMailer::Preview
   # Preview this email at http://localhost:3000/rails/mailers/command_mailer/verified
   def verified
     # Create or find a user for the preview
-    user = User.first || User.create!(email: "preview@example.com", verified: true)
+    user = User.new(email: "ned.flanders@springfield.com", verified_at: Time.zone.now)
 
     # Call the mailer with appropriate test data
     CommandMailer.verified(
@@ -55,7 +55,7 @@ class CommandMailerPreview < ActionMailer::Preview
   def error
     # Call the mailer with appropriate test data
     CommandMailer.error(
-      "preview@example.com",
+      "ned.flanders@springfield.com",
       "Error Processing Request",
       "We couldn't process your request due to an error. Please try again.",
       "help@postcardmailer.us"
@@ -66,7 +66,7 @@ class CommandMailerPreview < ActionMailer::Preview
   def help
     # Call the mailer with appropriate test data
     CommandMailer.help(
-      "preview@example.com",
+      "ned.flanders@springfield.com",
       "Help Request",
       "help@postcardmailer.us"
     )

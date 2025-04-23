@@ -2,13 +2,13 @@
   <h3 style="margin-top: 0; color: #0066cc;">Send a Postcard</h3>
   <p style="margin: 0 0 1em 0;">To send a postcard to someone in your address book:</p>
   <ol style="margin-left: 20px;">
-    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;">$nickname@postcardmailer.us</strong></li>
+    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;"><%= defined?(address) ? "#{address.nickname}@postcardmailer.us" : "$nickname@postcardmailer.us" %></strong></li>
     <li style="margin-bottom: 0.5em;">Use the subject line for the <strong style="color: #000;">message</strong> to the recipient</li>
     <li style="margin-bottom: 0.5em;">Attach the <strong style="color: #000;">image</strong> you want to use for the postcard</li>
   </ol>
   <p style="margin: 0 0 1em 0;">Example:<br>
-    To: mom@postcardmailer.us<br>
-    Subject: Had a great time in San Francisco!<br>
-    Attachment: vacation-photo.jpg
+    To: <%= defined?(address) ? "#{address.nickname}@postcardmailer.us" : "mom@postcardmailer.us" %><br>
+    Subject: Greetings from San Francisco!<br>
+    Attachment: vacation-photo.jpg<br>
   </p>
 </div> 

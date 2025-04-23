@@ -10,7 +10,7 @@ class CommandMailer < ApplicationMailer
     @new_address = new_address
 
     mail(
-      to: @user.email,
+      to: recipient_email,
       from: from_email,
       subject: "Re: #{original_subject}"
     )

@@ -21,8 +21,3 @@ NOTE: Your account is still pending verification. While this address has been ad
 <% end %>
 
 If you did not request this action or have any questions, please contact support.
-
-© <%= Date.today.year %> PostcardMailer.us
-<% if @user.addresses.first.present? %>
-<%= @user.addresses.first.address1 %>, <%= @user.addresses.first.city %>, <%= @user.addresses.first.state %> <%= @user.addresses.first.postal_code %>
-<% end %>
