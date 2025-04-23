@@ -6,38 +6,15 @@ WELCOME TO POSTCARDMAILER.US!
 
 Here's how to use our service:
 
-1. SIGN UP
-   - Send an email to signup@postcardmailer.us
-   - Include your full name in the subject line
-   - Include your mailing address in the body
+<%= render 'command_mailer/signup_instructions' %>
+<%= render 'command_mailer/adduser_instructions' %>
+<%= render 'command_mailer/postcard_instructions' %>
+<%= render 'command_mailer/help_instructions' %>
 
-   Example:
-   To: signup@postcardmailer.us
-   Subject: John Smith
-   Body: 123 Main St, Apt 4B
-         San Francisco, CA 94110
+IMPORTANT NOTES
+- New accounts require verification before you can send postcards
+- Make sure addresses are complete and formatted correctly
+- Image attachments should be clear and high resolution for best results
+- The nickname in the email address identifies the recipient
 
-2. ADD AN ADDRESS
-   - Send an email to $nickname@postcardmailer.us
-   - Use 'adduser' as the subject line
-   - Include the recipient's name and address in the body
-
-   Example:
-   To: mom@postcardmailer.us
-   Subject: adduser
-   Body: Jane Smith
-         456 Oak Avenue
-         Chicago, IL 60601
-
-3. SEND A POSTCARD
-   - Send an email to $nickname@postcardmailer.us
-   - Use the subject line for the message to the recipient
-   - Attach the image you want to use for the postcard
-
-   Example:
-   To: mom@postcardmailer.us
-   Subject: Had a great time in San Francisco!
-   Attachment: vacation-photo.jpg
-
-4. GET HELP
-   - Send an email to help@postcardmailer.us anytime for these instructions 
+If you have any other questions or need assistance, please reply to this email. 

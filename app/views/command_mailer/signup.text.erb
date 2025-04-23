@@ -10,30 +10,9 @@ GETTING STARTED
 
 Here's how to use our service:
 
-2. ADD AN ADDRESS
-   - Send an email to $nickname@postcardmailer.us
-   - Use 'adduser' as the subject line
-   - Include the recipient's name and address in the body
-
-   Example:
-   To: mom@postcardmailer.us
-   Subject: adduser
-   Body: Jane Smith
-         456 Oak Avenue
-         Chicago, IL 60601
-
-3. SEND A POSTCARD
-   - Send an email to $nickname@postcardmailer.us
-   - Use the subject line for the message to the recipient
-   - Attach the image you want to use for the postcard
-
-   Example:
-   To: mom@postcardmailer.us
-   Subject: Had a great time in San Francisco!
-   Attachment: vacation-photo.jpg
-
-4. GET HELP
-   - Send an email to help@postcardmailer.us anytime for these instructions
+<%= render 'command_mailer/adduser_instructions' %>
+<%= render 'command_mailer/postcard_instructions' %>
+<%= render 'command_mailer/help_instructions' %>
 
 If you have any questions or need assistance, please reply to this email.
 

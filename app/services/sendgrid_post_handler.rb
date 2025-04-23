@@ -285,17 +285,17 @@ class SendgridPostHandler
     from_email = extract_email_from_sendgrid_from(@params[:from])
     Rails.logger.info "SendgridPostHandler looking up user with email: #{from_email}"
     user = User.find_by(email: from_email)
-    
+
     unless user
       Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
       return [nil, nil]
     end
-    
+
     # Extract nickname from the "to" email address (format: nickname@postcardmailer.us)
     nickname = @params[:to].split('@').first
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
-    
+
     unless address
       Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
       # Send error message with original subject and to email for threading

@@ -46,7 +46,11 @@ RSpec.describe CommandMailer, type: :mailer do
     end
 
     it "renders the body" do
-      expect(mail.body.encoded).to match("WELCOME TO POSTCARDMAILER.US")
+      expect(mail.body.encoded).to match("Your account is pending verification")
+      expect(mail.body.encoded).to match("GETTING STARTED")
+      expect(mail.body.encoded).to match("ADD AN ADDRESS")
+      expect(mail.body.encoded).to match("SEND A POSTCARD")
+      expect(mail.body.encoded).to match("GET HELP")
     end
   end
 
