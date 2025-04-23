@@ -1,146 +1,81 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      line-height: 1.5;
-      color: #333;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    .status-box {
-      background-color: #f7f9fc;
-      border-left: 4px solid #4a6ee0;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-    .status-label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    .tracking-events {
-      margin-top: 20px;
-      border-top: 1px solid #eee;
-      padding-top: 15px;
-    }
-    .event {
-      margin-bottom: 10px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #eee;
-    }
-    .footer {
-      margin-top: 30px;
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      border-top: 1px solid #eee;
-      padding-top: 20px;
-    }
-    .button {
-      display: inline-block;
-      background-color: #4a6ee0;
-      color: white;
-      padding: 10px 20px;
-      text-decoration: none;
-      border-radius: 4px;
-      margin-top: 15px;
-    }
-    .postcard-image {
-      width: 100%;
-      max-width: 500px;
-      margin: 20px 0;
-      border: 1px solid #eee;
-      border-radius: 4px;
-    }
-  </style>
-</head>
-<body>
-  <p>Hello <%= @postcard.address.name %>,</p>
+<% content_for :title do %>Postcard Status Update<% end %>
 
-  <div class="status-box">
-    <div class="status-label">Current Status:</div>
-    <div><strong><%= @status.humanize %></strong></div>
-    <% if @status_details.present? %>
-      <div style="margin-top: 10px;"><%= @status_details %></div>
-    <% end %>
-    <% if @timestamp.present? %>
-      <div style="margin-top: 10px; color: #888; font-size: 12px;">
-        Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>
+<p style="margin: 0 0 1em 0;">Hello <%= @postcard.address.name %>,</p>
+
+<div style="background-color: #f7f9fc; border-left: 4px solid #4a6ee0; padding: 15px; margin-bottom: 20px;">
+  <div style="font-weight: bold; margin-bottom: 5px;">Current Status:</div>
+  <div><strong><%= @status.humanize %></strong></div>
+  <% if @status_details.present? %>
+    <div style="margin-top: 10px;"><%= @status_details %></div>
+  <% end %>
+  <% if @timestamp.present? %>
+    <div style="margin-top: 10px; color: #888; font-size: 12px;">
+      Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>
+    </div>
+  <% end %>
+</div>
+
+<p style="margin: 0 0 1em 0;">
+  <% case @status.downcase %>
+  <% when "printed" %>
+    Your postcard has been printed and is being prepared for mailing.
+  <% when "mailed", "in_transit" %>
+    Your postcard has been handed off to the postal service and is on its way to the recipient.
+  <% when "delivered" %>
+    Great news! Your postcard has been delivered to the recipient.
+  <% when "returned" %>
+    Unfortunately, your postcard was returned to the sender. This could be due to an incorrect address or other delivery issues.
+  <% when "error" %>
+    We encountered an issue processing your postcard. Please check your account for more details.
+  <% else %>
+    Your postcard status has been updated.
+  <% end %>
+</p>
+
+<% if @postcard.image_url.present? %>
+  <img src="<%= @postcard.image_url %>" alt="Your Postcard" style="width: 100%; max-width: 500px; margin: 20px 0; border: 1px solid #eee; border-radius: 4px;">
+<% end %>
+
+<% if @postcard.address.present? %>
+  <p style="margin: 0 0 1em 0;">
+    <strong>Recipient:</strong> <%= @postcard.address.name %><br>
+    <strong>Address:</strong> <%= @postcard.address.address1 %>, <%= @postcard.address.city %>, <%= @postcard.address.state %> <%= @postcard.address.postal_code %>
+  </p>
+<% end %>
+
+<% if @postcard.message.present? %>
+  <p style="margin: 0 0 1em 0;">
+    <strong>Message:</strong> <%= @postcard.message %>
+  </p>
+<% end %>
+
+<% if @tracking_events.any? %>
+  <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+    <h3 style="color: #0066cc; margin-top: 1.5em;">Tracking History</h3>
+    <% @tracking_events.each do |event| %>
+      <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+        <div><strong><%= event['Status'] %></strong></div>
+        <div><%= event['Description'] %></div>
+        <% if event['Timestamp'].present? %>
+          <div style="color: #888; font-size: 12px;">
+            <%= DateTime.parse(event['Timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </div>
+<% end %>
 
-  <p>
-    <% case @status.downcase %>
-    <% when "printed" %>
-      Your postcard has been printed and is being prepared for mailing.
-    <% when "mailed", "in_transit" %>
-      Your postcard has been handed off to the postal service and is on its way to the recipient.
-    <% when "delivered" %>
-      Great news! Your postcard has been delivered to the recipient.
-    <% when "returned" %>
-      Unfortunately, your postcard was returned to the sender. This could be due to an incorrect address or other delivery issues.
-    <% when "error" %>
-      We encountered an issue processing your postcard. Please check your account for more details.
-    <% else %>
-      Your postcard status has been updated.
+<% if @directmailers_events.any? %>
+  <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+    <h3 style="color: #0066cc; margin-top: 1.5em;">Webhook Event History</h3>
+    <% @directmailers_events.each do |event| %>
+      <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+        <div><strong><%= event['event_type'] %></strong></div>
+        <div style="color: #888; font-size: 12px;">
+          <%= DateTime.parse(event['timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+        </div>
+      </div>
     <% end %>
-  </p>
-
-  <% if @postcard.image_url.present? %>
-    <img src="<%= @postcard.image_url %>" alt="Your Postcard" class="postcard-image">
-  <% end %>
-
-  <% if @postcard.address.present? %>
-    <p>
-      <strong>Recipient:</strong> <%= @postcard.address.name %><br>
-      <strong>Address:</strong> <%= @postcard.address.address1 %>, <%= @postcard.address.city %>, <%= @postcard.address.state %> <%= @postcard.address.postal_code %>
-    </p>
-  <% end %>
-
-  <% if @postcard.message.present? %>
-    <p>
-      <strong>Message:</strong> <%= @postcard.message %>
-    </p>
-  <% end %>
-
-  <% if @tracking_events.any? %>
-    <div class="tracking-events">
-      <h3>Tracking History</h3>
-      <% @tracking_events.each do |event| %>
-        <div class="event">
-          <div><strong><%= event['Status'] %></strong></div>
-          <div><%= event['Description'] %></div>
-          <% if event['Timestamp'].present? %>
-            <div style="color: #888; font-size: 12px;">
-              <%= DateTime.parse(event['Timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @directmailers_events.any? %>
-    <div class="tracking-events">
-      <h3>Webhook Event History</h3>
-      <% @directmailers_events.each do |event| %>
-        <div class="event">
-          <div><strong><%= event['event_type'] %></strong></div>
-          <div style="color: #888; font-size: 12px;">
-            <%= DateTime.parse(event['timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
-          </div>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
-  <div class="footer">
-    <p>© <%= Date.today.year %> PostcardMailer. All rights reserved.</p>
-    <p>1198 S Van Ness Ave #40817, San Francisco, CA 94110</p>
   </div>
-</body>
-</html>
+<% end %>
