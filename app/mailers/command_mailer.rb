@@ -48,16 +48,20 @@ class CommandMailer < ApplicationMailer
   end
 
   # Send error notification when a command fails or has issues
-  def error(to_address, original_subject, error_message, from_email)
+  def error(to_address, original_subject, error_message, from_email, bcc_email = nil)
     @error_message = error_message
     @message = error_message
     @email = to_address
 
-    mail(
+    mail_params = {
       to: to_address,
       from: from_email,
       subject: "Re: #{original_subject}"
-    )
+    }
+    
+    mail_params[:bcc] = bcc_email if bcc_email.present?
+    
+    mail(mail_params)
   end
   
   # Send help instructions for using the service

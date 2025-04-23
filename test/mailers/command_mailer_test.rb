@@ -31,10 +31,20 @@ class CommandMailerTest < ActionMailer::TestCase
   end
 
   test "error" do
+    mail = CommandMailer.error("ned.flanders@springfield.com", "Error", "Something went wrong", "from@example.com", "bcc@example.com")
+    assert_equal "Re: Error", mail.subject
+    assert_equal ["ned.flanders@springfield.com"], mail.to
+    assert_equal ["from@example.com"], mail.from
+    assert_equal ["bcc@example.com"], mail.bcc
+    assert_match "Something went wrong", mail.body.encoded
+  end
+
+  test "error without bcc" do
     mail = CommandMailer.error("ned.flanders@springfield.com", "Error", "Something went wrong", "from@example.com")
     assert_equal "Re: Error", mail.subject
     assert_equal ["ned.flanders@springfield.com"], mail.to
     assert_equal ["from@example.com"], mail.from
+    assert_nil mail.bcc
     assert_match "Something went wrong", mail.body.encoded
   end
 

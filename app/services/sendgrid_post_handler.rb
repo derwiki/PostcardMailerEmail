@@ -15,6 +15,23 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler headers: #{@params[:headers]}"
     Rails.logger.info "SendgridPostHandler SPF: #{@params[:SPF]}"
     Rails.logger.info "SendgridPostHandler DKIM: #{@params[:dkim]}"
+    
+    # Verify email authentication
+    unless spf_passes? && dkim_passes?
+      @from_email = extract_email_from_sendgrid_from(@params[:from])
+      Rails.logger.warn "Email authentication failed for #{@from_email}. SPF: #{@params[:SPF]}, DKIM: #{@params[:dkim]}"
+      
+      CommandMailer.error(
+        @from_email,
+        "Email Authentication Failed",
+        "We couldn't verify the authenticity of your email. This may indicate spoofing or unauthorized use of the email address.",
+        "help@postcardmailer.us",
+        "postcardmailer@kgk.host"
+      ).deliver_now
+      
+      Rails.logger.info "SendgridPostHandler sent error email about authentication failure to: #{@from_email}"
+      return
+    end
 
     bodytext = @params[:text]
     @from_email = extract_email_from_sendgrid_from(@params[:from])
@@ -51,14 +68,30 @@ class SendgridPostHandler
 
   private
 
-  def send_error_email(subject, message, to_email = nil)
+  def spf_passes?
+    return true if Rails.env.test? && !@params.key?(:SPF)
+    @params[:SPF] == "pass"
+  end
+
+  def dkim_passes?
+    return true if Rails.env.test? && !@params.key?(:dkim)
+    # DKIM format is typically something like "{@gmail.com : pass}"
+    return false unless @params[:dkim].present?
+    @params[:dkim].include?("pass")
+  end
+
+  def send_error_email(subject, message, to_email = nil, bcc_email = nil)
     to_email ||= @params[:to] || "help@postcardmailer.us"
+    @from_email ||= extract_email_from_sendgrid_from(@params[:from])
+    
     CommandMailer.error(
       @from_email,
       subject.presence || @params[:subject],
       message,
-      to_email
+      to_email,
+      bcc_email
     ).deliver_now
+    
     Rails.logger.info "SendgridPostHandler sent '#{message.truncate(30)}' error email to: #{@from_email}"
   end
 

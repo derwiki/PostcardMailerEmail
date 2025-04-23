@@ -16,6 +16,26 @@ RSpec.describe SendgridPostHandler do
   end
   let(:handler) { described_class.new(params) }
 
+  let(:valid_params) do
+    {
+      from: "User <user@example.com>",
+      to: "help@postcardmailer.us",
+      subject: "Help Request",
+      text: "This is a test message",
+      SPF: "pass",
+      dkim: "{@example.com : pass}"
+    }
+  end
+  
+  let(:mail_double) { 
+    double("Mail", 
+      deliver_now: true, 
+      bcc: nil
+    ).tap do |mail|
+      allow(mail).to receive(:bcc=)
+    end
+  }
+
   before do
     allow(Rails.logger).to receive(:info)
     allow(SecureRandom).to receive(:uuid).and_return('test-uuid')
@@ -29,6 +49,8 @@ RSpec.describe SendgridPostHandler do
       postal_code: '94110'
     )])
     allow(Date).to receive(:today).and_return(Date.new(2025, 4, 16))
+    allow(CommandMailer).to receive(:help).and_return(mail_double)
+    allow(CommandMailer).to receive(:error).and_return(mail_double)
   end
 
   describe '#process' do
@@ -249,10 +271,6 @@ RSpec.describe SendgridPostHandler do
         }
       end
 
-      before do
-        allow(CommandMailer).to receive_message_chain(:help, :deliver_now)
-      end
-
       it 'sends a help email to the sender' do
         handler.process
         
@@ -261,6 +279,59 @@ RSpec.describe SendgridPostHandler do
           'Help Request',
           'help@postcardmailer.us'
         )
+      end
+    end
+
+    context 'when authentication passes' do
+      it 'processes the help request' do
+        params_with_auth = {
+          from: "Test User <test@example.com>",
+          to: "help@postcardmailer.us",
+          text: "Test body text",
+          subject: "Help Request",
+          SPF: "pass",
+          dkim: "{@example.com : pass}"
+        }
+        handler = described_class.new(params_with_auth)
+        
+        expect(handler).to receive(:handle_help_request)
+        handler.process
+      end
+    end
+
+    context 'when SPF fails' do
+      it 'sends an error email and returns early' do
+        params_with_failed_spf = valid_params.merge(SPF: "fail")
+        handler = described_class.new(params_with_failed_spf)
+        
+        expect(handler).not_to receive(:handle_help_request)
+        expect(CommandMailer).to receive(:error).with(
+          "user@example.com",
+          "Email Authentication Failed",
+          "We couldn't verify the authenticity of your email. This may indicate spoofing or unauthorized use of the email address.",
+          "help@postcardmailer.us",
+          "postcardmailer@kgk.host"
+        ).and_return(mail_double)
+        
+        handler.process
+      end
+    end
+
+    context 'when DKIM fails' do
+      it 'sends an error email and returns early' do
+        params_with_failed_dkim = valid_params.merge(dkim: "{@example.com : fail}")
+        handler = described_class.new(params_with_failed_dkim)
+        
+        expect(handler).not_to receive(:handle_help_request)
+        expect(CommandMailer).to receive(:error).with(
+          "user@example.com",
+          "Email Authentication Failed",
+          "We couldn't verify the authenticity of your email. This may indicate spoofing or unauthorized use of the email address.",
+          "help@postcardmailer.us",
+          "postcardmailer@kgk.host"
+        ).and_return(mail_double)
+        
+        handler.process
       end
     end
   end
@@ -297,6 +368,40 @@ RSpec.describe SendgridPostHandler do
         expect(found_user).to be_nil
         expect(found_address).to be_nil
       end
+    end
+  end
+
+  describe '#spf_passes?' do
+    it 'returns true when SPF is "pass"' do
+      handler = described_class.new(SPF: "pass")
+      expect(handler.send(:spf_passes?)).to be true
+    end
+
+    it 'returns false when SPF is not "pass"' do
+      handler = described_class.new(SPF: "fail")
+      expect(handler.send(:spf_passes?)).to be false
+    end
+
+    it 'returns false when SPF is nil' do
+      handler = described_class.new(SPF: nil)
+      expect(handler.send(:spf_passes?)).to be false
+    end
+  end
+
+  describe '#dkim_passes?' do
+    it 'returns true when dkim contains "pass"' do
+      handler = described_class.new(dkim: "{@example.com : pass}")
+      expect(handler.send(:dkim_passes?)).to be true
+    end
+
+    it 'returns false when dkim does not contain "pass"' do
+      handler = described_class.new(dkim: "{@example.com : fail}")
+      expect(handler.send(:dkim_passes?)).to be false
+    end
+
+    it 'returns false when dkim is nil' do
+      handler = described_class.new(dkim: nil)
+      expect(handler.send(:dkim_passes?)).to be false
     end
   end
 end 
