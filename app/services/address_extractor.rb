@@ -3,13 +3,36 @@ require 'net/http'
 require 'json'
 
 class AddressExtractor
-    def self.extract(text_body)
-        # TODO: use gpt-4o-mini
+    def self.extract(text_body, model = "gpt-4.1-nano")
         url = URI("https://api.openai.com/v1/chat/completions")
 
         # Set the API parameters
-        model = "gpt-3.5-turbo"  # The GPT model to use
-        prompt = "Format the following as a valid mailing address for USPS: #{text_body}"  # The text prompt to generate completions for
+        prompt = """Format the following text into a valid USPS mailing address.
+Output format should be:
+Line 1: Name
+Line 2: Street address (including apt/suite/unit)
+Line 3: City, State ZIP
+
+Examples:
+Input: John Smith at 123 Main Street Apt 4B, Boston Massachusetts
+Output:
+John Smith
+123 Main Street Apt 4B
+Boston, MA 02108
+
+Input: Sarah Johnson works at 456 Corporate Plaza Suite 789 in San Francisco CA 94105
+Output:
+Sarah Johnson
+456 Corporate Plaza Suite 789
+San Francisco, CA 94105
+
+Input: Bob Wilson 789 Rural Route 2 Box 45 Little Rock Arkansas
+Output:
+Bob Wilson
+789 Rural Route 2 Box 45
+Little Rock, AR 72201
+
+Input: #{text_body}"""
         max_tokens = 100  # The maximum number of tokens to generate
         temperature = 0.0  # Controls the randomness of the generated text
         json_params = {
