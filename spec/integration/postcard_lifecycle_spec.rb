@@ -17,9 +17,9 @@ RSpec.describe "Postcard Lifecycle", type: :request do
   let(:sendgrid_params) do
     {
       from: 'Test User <test@example.com>',
-      to: 'any@postcardmailer.us',
+      to: 'test@postcardmailer.us',
       text: 'Test body text',
-      subject: 'test',
+      subject: 'Test caption',
       attachment1: image_data
     }
   end

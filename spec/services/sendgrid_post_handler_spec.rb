@@ -8,9 +8,9 @@ RSpec.describe SendgridPostHandler do
   let(:params) do
     {
       from: 'Test User <test@example.com>',
-      to: 'any@postcardmailer.us',
+      to: 'test@postcardmailer.us',
       text: 'Test body text',
-      subject: 'test',
+      subject: 'Test caption',
       attachment1: 'test-image-data'
     }
   end
@@ -60,7 +60,7 @@ RSpec.describe SendgridPostHandler do
             postal_code: address.postal_code
           },
           "https://s3.amazonaws.com/postcardmailer.us/test-uuid.jpg",
-          "test",
+          "Test caption",
           dryrun: false,
           user: user,
           address: address
@@ -94,9 +94,9 @@ RSpec.describe SendgridPostHandler do
       let(:params) do
         {
           from: 'Test User <test@example.com>',
-          to: 'any@postcardmailer.us',
+          to: 'test@postcardmailer.us',
           text: 'Test body text',
-          subject: 'test'
+          subject: 'Test caption'
         }
       end
 
@@ -167,8 +167,8 @@ RSpec.describe SendgridPostHandler do
       let(:params) do
         {
           from: 'Test User <test@example.com>',
-          to: 'adduser@postcardmailer.us',
-          subject: 'home',
+          to: 'home@postcardmailer.us',
+          subject: 'adduser',
           text: 'Sarah Johnson\n1234 Maple Avenue Apt 5B\nSan Francisco, CA 94110'
         }
       end
@@ -202,9 +202,9 @@ RSpec.describe SendgridPostHandler do
         let(:params) do
           {
             from: 'Unknown User <unknown@example.com>',
-            to: 'adduser@postcardmailer.us',
+            to: 'home@postcardmailer.us',
             text: 'Test body text',
-            subject: 'New Address User'
+            subject: 'adduser'
           }
         end
 
@@ -216,6 +216,21 @@ RSpec.describe SendgridPostHandler do
       context 'when address cannot be parsed' do
         before do
           allow(AddressExtractor).to receive(:extract).and_return([nil, nil])
+        end
+
+        it 'does not create a new address' do
+          expect { handler.process }.to change(Address, :count).by(0)
+        end
+      end
+
+      context 'when subject is not adduser' do
+        let(:params) do
+          {
+            from: 'Test User <test@example.com>',
+            to: 'home@postcardmailer.us',
+            text: 'Test body text',
+            subject: 'not adduser'
+          }
         end
 
         it 'does not create a new address' do

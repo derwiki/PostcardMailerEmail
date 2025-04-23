@@ -1,20 +1,33 @@
 Hello <%= @user.email %>,
 
-Great news! Your account has been verified. You can now start sending postcards!
+Great news! Your PostcardMailer.us account has been verified. You can now start sending postcards to your friends and family.
 
-You can send postcards by emailing send@postcardmailer.us with the following information:
+NEXT STEPS
 
-Subject: [Your postcard message]
-Body:
-to: [recipient nickname or full address]
-image: [attach an image or include a URL to an image]
+Here's how to get started:
 
-For example, you could send:
+2. ADD AN ADDRESS
+   - Send an email to $nickname@postcardmailer.us
+   - Use 'adduser' as the subject line
+   - Include the recipient's name and address in the body
 
-To: mom@postcardmailer.us
-Subject: Greetings from San Francisco!
-[Attached image of the Golden Gate Bridge]
+   Example:
+   To: mom@postcardmailer.us
+   Subject: adduser
+   Body: Jane Smith
+         456 Oak Avenue
+         Chicago, IL 60601
 
-If you have any questions, please contact support.
+3. SEND A POSTCARD
+   - Send an email to $nickname@postcardmailer.us
+   - Use the subject line for the message to the recipient
+   - Attach the image you want to use for the postcard
+
+   Example:
+   To: mom@postcardmailer.us
+   Subject: Had a great time in San Francisco!
+   Attachment: vacation-photo.jpg
+
+If you have any questions or need assistance, please reply to this email.
 
 © <%= Date.today.year %> PostcardMailer.us

@@ -32,7 +32,7 @@ class SendgridPostHandler
     end
 
     # Check if this is an adduser request
-    if @params[:to] == "adduser@postcardmailer.us"
+    if @params[:subject].strip.downcase == 'adduser'
       handle_adduser_request
       return
     end
@@ -163,7 +163,8 @@ class SendgridPostHandler
     user = authenticate_user
     return unless user
     
-    nickname = @params[:subject].strip
+    # Extract nickname from the "to" email address (format: nickname@postcardmailer.us)
+    nickname = @params[:to].split('@').first
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
     
@@ -234,13 +235,23 @@ class SendgridPostHandler
     user = authenticate_user
     return unless user
 
-    # Extract nickname from subject line
-    nickname = @params[:subject].strip
+    # Verify this is an adduser command
+    unless @params[:subject].strip.downcase == 'adduser'
+      Rails.logger.info "SendgridPostHandler invalid adduser command"
+      send_error_email(
+        "Invalid Command",
+        "To add a new address, use 'adduser' as the subject line and include the nickname in the email address (e.g., home@postcardmailer.us)."
+      )
+      return
+    end
+
+    # Extract nickname from the "to" email address
+    nickname = @params[:to].split('@').first
     if nickname.empty?
-      Rails.logger.info "SendgridPostHandler empty nickname in subject"
+      Rails.logger.info "SendgridPostHandler empty nickname in email address"
       send_error_email(
         "Add New Address",
-        "Please provide a nickname for this address in the subject line of your email."
+        "Please provide a nickname in the email address (e.g., home@postcardmailer.us)."
       )
       return
     end
@@ -280,8 +291,8 @@ class SendgridPostHandler
       return [nil, nil]
     end
     
-    # Extract nickname from subject line
-    nickname = @params[:subject].strip
+    # Extract nickname from the "to" email address (format: nickname@postcardmailer.us)
+    nickname = @params[:to].split('@').first
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
     

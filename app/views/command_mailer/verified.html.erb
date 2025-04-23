@@ -1,28 +1,12 @@
-<% content_for :title do %>Account Verified<% end %>
+<% content_for :title do %>Your PostcardMailer.us Account is Verified!<% end %>
 
 <p style="margin: 0 0 1em 0;">Hello <%= @user.email %>,</p>
 
-<div style="background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
-  <p style="margin: 0 0 1em 0;"><strong style="color: #000;">Great news!</strong> Your account has been verified. You can now start sending postcards!</p>
-</div>
+<p style="margin: 0 0 1em 0;">Great news! Your PostcardMailer.us account has been verified. You can now start sending postcards to your friends and family.</p>
 
-<p style="margin: 0 0 1em 0;">You can send postcards by emailing <strong style="color: #000;">send@postcardmailer.us</strong> with the following information:</p>
+<h2 style="color: #0066cc; margin-top: 1.5em;">Next Steps</h2>
 
-<div style="background-color: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 5px;">
-  <p style="margin: 0 0 1em 0;"><strong style="color: #000;">Subject:</strong> [Your postcard message]</p>
-  <p style="margin: 0 0 1em 0;"><strong style="color: #000;">Body:</strong></p>
-  <p style="font-family: monospace; background-color: #f1f1f1; padding: 2px 4px; border-radius: 3px; margin: 0 0 1em 0;">to: [recipient nickname or full address]</p>
-  <p style="font-family: monospace; background-color: #f1f1f1; padding: 2px 4px; border-radius: 3px; margin: 0 0 1em 0;">image: [attach an image or include a URL to an image]</p>
-</div>
+<%= render 'command_mailer/adduser_instructions' %>
+<%= render 'command_mailer/postcard_instructions' %>
 
-<p style="margin: 0 0 1em 0;">For example, you could send:</p>
-
-<div style="background-color: #f8f9fa; padding: 15px; margin: 20px 0; border-radius: 5px;">
-  <p style="margin: 0 0 1em 0;"><strong style="color: #000;">Subject:</strong> Greetings from San Francisco!</p>
-  <p style="margin: 0 0 1em 0;"><strong style="color: #000;">Body:</strong></p>
-  <p style="font-family: monospace; background-color: #f1f1f1; padding: 2px 4px; border-radius: 3px; margin: 0 0 1em 0;">to: mom</p>
-  <p style="margin: 0 0 1em 0;">Having a great time in California. The weather is beautiful and the food is amazing!</p>
-  <p style="margin: 0 0 1em 0;"><em style="color: #666;">[Attached image of the Golden Gate Bridge]</em></p>
-</div>
-
-<p style="margin: 0 0 1em 0;">If you have any questions, please contact support.</p> 
+<p style="margin: 0 0 1em 0;">If you have any questions or need assistance, please reply to this email.</p> 
