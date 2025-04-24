@@ -74,14 +74,14 @@ RSpec.describe CommandMailer, type: :mailer do
     let(:original_subject) { "Failed Command" }
     let(:error_message) { "Address could not be parsed from your email" }
     let(:from_email) { "help@postcardmailer.us" }
-    let(:bcc_email) { "postcardmailer@kgk.host" }
+    let(:bcc_email) { "custom-bcc@example.com" }
     let(:mail) { CommandMailer.error(to_address, original_subject, error_message, from_email, bcc_email) }
 
     it "renders the headers" do
       expect(mail.subject).to eq("Re: Failed Command")
       expect(mail.to).to eq(["user@example.com"])
       expect(mail.from).to eq(["help@postcardmailer.us"])
-      expect(mail.bcc).to eq(["postcardmailer@kgk.host"])
+      expect(mail.bcc).to eq(["custom-bcc@example.com"])
     end
 
     it "renders the body" do
@@ -89,9 +89,9 @@ RSpec.describe CommandMailer, type: :mailer do
       expect(mail.body.encoded).to match("Address could not be parsed from your email")
     end
     
-    it "works without bcc" do
+    it "defaults to postcardmailer@kgk.host when bcc not specified" do
       mail_without_bcc = CommandMailer.error(to_address, original_subject, error_message, from_email)
-      expect(mail_without_bcc.bcc).to be_nil
+      expect(mail_without_bcc.bcc).to eq(["postcardmailer@kgk.host"])
     end
   end
 
