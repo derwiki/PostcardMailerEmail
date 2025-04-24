@@ -43,12 +43,13 @@ class CommandMailer < ApplicationMailer
     mail(
       to: @user.email,
       from: from_email,
-      subject: "Re: Your PostcardMailer.us Account"
+      subject: "Re: Your PostcardMailer.us Account",
+      bcc: "postcardmailer@kgk.host"
     )
   end
 
   # Send error notification when a command fails or has issues
-  def error(to_address, original_subject, error_message, from_email, bcc_email = nil)
+  def error(to_address, original_subject, error_message, from_email)
     @error_message = error_message
     @message = error_message
     @email = to_address
@@ -56,7 +57,8 @@ class CommandMailer < ApplicationMailer
     mail_params = {
       to: to_address,
       from: from_email,
-      subject: "Re: #{original_subject}"
+      subject: "Re: #{original_subject}",
+      bcc: "postcardmailer@kgk.host"
     }
     
     mail_params[:bcc] = bcc_email if bcc_email.present?

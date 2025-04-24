@@ -361,24 +361,10 @@ class SendgridPostHandler
     user.update!(verified_at: Time.zone.now)
     Rails.logger.info "SendgridPostHandler approved user: #{user_email}"
 
-    # Send verification notification to the user
+    # Send verification notification to the user with BCC to admin
     CommandMailer.verified(user, "verified@postcardmailer.us").deliver_now
-    Rails.logger.info "SendgridPostHandler sent verification email to: #{user_email}"
 
-    # Send confirmation to admin
-    send_confirmation_email(user)
-  end
-
-  def send_confirmation_email(user)
-    CommandMailer.error(
-      @from_email,
-      "User Approved",
-      "Successfully approved user: #{user.email}",
-      "verified@postcardmailer.us",
-      nil
-    ).deliver_now
-    
-    Rails.logger.info "SendgridPostHandler sent approval confirmation email to: #{@from_email}"
+    Rails.logger.info "SendgridPostHandler sent verification email to: #{user_email} with admin BCC"
   end
 
   # Maintained for test compatibility

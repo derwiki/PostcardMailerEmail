@@ -301,7 +301,9 @@ RSpec.describe SendgridPostHandler do
         allow(CommandMailer).to receive(:verified).and_return(verification_mail)
       end
 
-      it 'approves the user and sends verification email' do
+      it 'approves the user and sends verification email with admin BCC' do
+        expect(verification_mail).to receive(:bcc=).with("postcardmailer@kgk.host")
+
         handler.process
         
         expect(unverified_user.reload.verified?).to be true
@@ -309,13 +311,7 @@ RSpec.describe SendgridPostHandler do
           unverified_user,
           "verified@postcardmailer.us"
         )
-        expect(CommandMailer).to have_received(:error).with(
-          "derewecki@gmail.com",
-          "User Approved",
-          "Successfully approved user: pending@example.com",
-          "verified@postcardmailer.us",
-          nil
-        )
+        expect(CommandMailer).not_to have_received(:error)
       end
 
       context 'when from a different email' do
