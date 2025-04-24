@@ -46,7 +46,7 @@ class SendgridPostHandler
     end
 
     # Check if this is an approve request
-    if @params[:subject].strip.downcase == 'approve' && @from_email == "derewecki@gmail.com"
+    if @params[:to] == "approve@postcardmailer.us" && @from_email == "derewecki@gmail.com"
       handle_approve_request
       return
     end
@@ -333,13 +333,13 @@ class SendgridPostHandler
       return
     end
 
-    # Extract user email from the message body
-    user_email = @params[:text].to_s.strip
+    # Extract user email from the subject line
+    user_email = @params[:subject].to_s.strip
     if user_email.empty?
       Rails.logger.info "SendgridPostHandler empty user email in approve request"
       send_error_email(
         "Approve Error",
-        "Please include the user's email address in the email body.",
+        "Please include the user's email address in the subject line.",
         "verified@postcardmailer.us"
       )
       return

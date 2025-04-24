@@ -288,8 +288,8 @@ RSpec.describe SendgridPostHandler do
         {
           from: 'Admin <derewecki@gmail.com>',
           to: 'approve@postcardmailer.us',
-          text: 'pending@example.com',
-          subject: 'approve',
+          text: '',
+          subject: 'pending@example.com',
           SPF: "pass",
           dkim: "{@gmail.com : pass}"
         }
@@ -323,8 +323,8 @@ RSpec.describe SendgridPostHandler do
           {
             from: 'Not Admin <not-admin@example.com>',
             to: 'approve@postcardmailer.us',
-            text: 'pending@example.com',
-            subject: 'approve',
+            text: '',
+            subject: 'pending@example.com',
             SPF: "pass",
             dkim: "{@example.com : pass}"
           }
@@ -343,8 +343,8 @@ RSpec.describe SendgridPostHandler do
           {
             from: 'Admin <derewecki@gmail.com>',
             to: 'approve@postcardmailer.us',
-            text: 'nonexistent@example.com',
-            subject: 'approve',
+            text: '',
+            subject: 'nonexistent@example.com',
             SPF: "pass",
             dkim: "{@gmail.com : pass}"
           }
@@ -370,7 +370,7 @@ RSpec.describe SendgridPostHandler do
             from: 'Admin <derewecki@gmail.com>',
             to: 'approve@postcardmailer.us',
             text: '',
-            subject: 'approve',
+            subject: '',
             SPF: "pass",
             dkim: "{@gmail.com : pass}"
           }
@@ -382,7 +382,7 @@ RSpec.describe SendgridPostHandler do
           expect(CommandMailer).to have_received(:error).with(
             "derewecki@gmail.com",
             "Approve Error",
-            "Please include the user's email address in the email body.",
+            "Please include the user's email address in the subject line.",
             "verified@postcardmailer.us",
             nil
           )
