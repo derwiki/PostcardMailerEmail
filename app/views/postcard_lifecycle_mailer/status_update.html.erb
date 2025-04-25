@@ -49,6 +49,14 @@
   </p>
 <% end %>
 
+<div style="margin-top: 20px; padding: 15px; background-color: #f7f9fc; border-radius: 4px;">
+  <h3 style="color: #0066cc; margin-top: 0;">Your Postcard History</h3>
+  <p style="margin: 0;">
+    <strong>Total Cards Sent:</strong> <%= @total_cards_sent %><br>
+    <strong>Total Cost:</strong> $<%= sprintf('%.2f', @total_cost) %>
+  </p>
+</div>
+
 <% if @tracking_events.any? %>
   <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
     <h3 style="color: #0066cc; margin-top: 1.5em;">Tracking History</h3>

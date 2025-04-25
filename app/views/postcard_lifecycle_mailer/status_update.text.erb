@@ -29,6 +29,10 @@ Address: <%= @postcard.address.address1 %>, <%= @postcard.address.city %>, <%= @
 Message: <%= @postcard.message %>
 <% end %>
 
+YOUR POSTCARD HISTORY:
+Total Cards Sent: <%= @total_cards_sent %>
+Total Cost: $<%= sprintf('%.2f', @total_cost) %>
+
 <% if @tracking_events.any? %>
 TRACKING HISTORY:
 <% @tracking_events.each do |event| %>

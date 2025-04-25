@@ -39,6 +39,10 @@ class PostcardLifecycleMailer < ApplicationMailer
     @tracking_events = postcard.response_data&.dig("TrackingEvents") || []
     @directmailers_events = postcard.directmailers_events || []
 
+    # Calculate total cost and cards sent
+    @total_cards_sent = @user.postcards.count
+    @total_cost = @total_cards_sent * 0.68
+
     # Use the nickname in the from email address
     nickname = postcard.address.nickname.present? ? postcard.address.nickname : 'notifications'
     from_email = "#{nickname}@postcardmailer.us"
