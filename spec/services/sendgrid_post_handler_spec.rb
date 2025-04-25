@@ -40,7 +40,7 @@ RSpec.describe SendgridPostHandler do
     allow(Rails.logger).to receive(:info)
     allow(SecureRandom).to receive(:uuid).and_return('test-uuid')
     allow(EssThree).to receive(:upload)
-    allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: 'success')))
+    allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: '{"PrintRecord": "test-123", "Status": "Created"}')))
     allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
       street: '1234 Maple Avenue',
       unit: 'Apt 5B',
@@ -87,6 +87,26 @@ RSpec.describe SendgridPostHandler do
           user: user,
           address: address
         )
+      end
+
+      context 'when DirectMail API returns an error' do
+        before do
+          allow(CreatePostcard).to receive(:new).and_return(
+            double(run: double(body: '{"Error": {"Message": "Print cost $0.680 of exceeds available account balance of $0.058", "StatusCode": 422}}'))
+          )
+        end
+
+        it 'sends an error email to the user' do
+          handler.process
+
+          expect(CommandMailer).to have_received(:error).with(
+            'test@example.com',
+            'Test caption',
+            'We encountered an error while processing your postcard: Print cost $0.680 of exceeds available account balance of $0.058',
+            'test@example.com',
+            'postcardmailer@kgk.host'
+          )
+        end
       end
     end
 

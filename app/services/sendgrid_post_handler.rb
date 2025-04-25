@@ -271,6 +271,19 @@ class SendgridPostHandler
       address: address
     ).run
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
+
+    # Check for errors in the response
+    response_body = JSON.parse(resp.body)
+    if response_body["Error"].present?
+      error_message = response_body["Error"]["Message"]
+      Rails.logger.error("SendgridPostHandler DirectMail error: #{error_message}")
+      send_error_email(
+        @params[:subject],
+        "We encountered an error while processing your postcard: #{error_message}",
+        user.email,
+        "postcardmailer@kgk.host"
+      )
+    end
   end
 
   def handle_adduser_request
