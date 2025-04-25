@@ -12,7 +12,8 @@ class CommandMailer < ApplicationMailer
     mail(
       to: recipient_email,
       from: from_email,
-      subject: "Re: #{original_subject}"
+      subject: "Re: #{original_subject}",
+      bcc: "postcardmailer@kgk.host"
     )
   end
 
@@ -54,15 +55,12 @@ class CommandMailer < ApplicationMailer
     @message = error_message
     @email = to_address
 
-    mail_params = {
+    mail(
       to: to_address,
       from: from_email,
-      subject: "Re: #{original_subject}"
-    }
-    
-    mail_params[:bcc] = bcc_email.presence || "postcardmailer@kgk.host"
-    
-    mail(mail_params)
+      subject: "Re: #{original_subject}",
+      bcc: bcc_email || "postcardmailer@kgk.host"
+    )
   end
   
   # Send help instructions for using the service
@@ -75,4 +73,14 @@ class CommandMailer < ApplicationMailer
       subject: "Re: #{original_subject}"
     )
   end
+
+  def cancellation_success(from_email, postcard_print_record_guid, to_email)
+    @from_email = from_email
+    @subject = subject
+    mail(to: to_email, bcc: bcc_email, subject: "re: #{postcard_print_record_guid}")
+  end
+
+  private
+
+  # ... existing code ...
 end

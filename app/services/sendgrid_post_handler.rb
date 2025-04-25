@@ -69,6 +69,12 @@ class SendgridPostHandler
       return
     end
 
+    # Check if this is a cancel request
+    if @params[:to] == "cancel@postcardmailer.us"
+      handle_cancel_request
+      return
+    end
+
     handle_mail_postcard_request
   end
 
@@ -346,13 +352,13 @@ class SendgridPostHandler
       return
     end
 
-    # Extract user email from the subject line
-    user_email = @params[:subject].to_s.strip
+    # Extract user email from the text field
+    user_email = @params[:text].to_s.strip
     if user_email.empty?
       Rails.logger.info "SendgridPostHandler empty user email in approve request"
       send_error_email(
         "Approve Error",
-        "Please include the user's email address in the subject line.",
+        "Please include the user's email address in the email body.",
         "verified@postcardmailer.us"
       )
       return
@@ -377,7 +383,72 @@ class SendgridPostHandler
     # Send verification notification to the user with BCC to admin
     CommandMailer.verified(user, "verified@postcardmailer.us").deliver_now
 
+    # Send confirmation to admin
+    CommandMailer.error(
+      @from_email,
+      "User Approved",
+      "Successfully approved user: #{user_email}",
+      "verified@postcardmailer.us",
+      nil
+    ).deliver_now
+
     Rails.logger.info "SendgridPostHandler sent verification email to: #{user_email} with admin BCC"
+  end
+
+  def handle_cancel_request
+    user = authenticate_user
+    return unless user
+
+    # Extract PrintRecord GUID from subject
+    print_record_guid = @params[:subject].strip
+    if print_record_guid.empty?
+      Rails.logger.info "SendgridPostHandler empty PrintRecord GUID in cancel request"
+      send_error_email(
+        "Cancel Error",
+        "Please include the PrintRecord GUID in the subject line.",
+        @params[:to],
+        "postcardmailer@kgk.host"
+      )
+      return
+    end
+
+    # Make DELETE request to DirectMail API
+    begin
+      uri = URI("https://print.directmailers.com/api/v1/postcard/#{print_record_guid}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+
+      request = Net::HTTP::Delete.new(uri)
+      response = http.request(request)
+      response_body = JSON.parse(response.body)
+
+      if response.code.to_i == 200 && response_body["Success"]
+        Rails.logger.info "SendgridPostHandler successfully canceled postcard: #{print_record_guid}"
+        CommandMailer.cancellation_success(
+          @from_email,
+          print_record_guid,
+          @params[:to],
+          "postcardmailer@kgk.host"
+        ).deliver_now
+      else
+        error_message = response_body["Error"]&.dig("Message") || "Unknown error occurred"
+        Rails.logger.error "SendgridPostHandler failed to cancel postcard: #{error_message}"
+        send_error_email(
+          "Cancel Error",
+          "Failed to cancel postcard: #{error_message}",
+          @params[:to],
+          "postcardmailer@kgk.host"
+        )
+      end
+    rescue => e
+      Rails.logger.error "SendgridPostHandler error canceling postcard: #{e.message}"
+      send_error_email(
+        "Cancel Error",
+        "An error occurred while trying to cancel your postcard. Please try again or contact support if the issue persists.",
+        @params[:to],
+        "postcardmailer@kgk.host"
+      )
+    end
   end
 
   # Maintained for test compatibility

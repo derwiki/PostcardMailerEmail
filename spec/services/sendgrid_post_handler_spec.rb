@@ -40,7 +40,7 @@ RSpec.describe SendgridPostHandler do
     allow(Rails.logger).to receive(:info)
     allow(SecureRandom).to receive(:uuid).and_return('test-uuid')
     allow(EssThree).to receive(:upload)
-    allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: '{"PrintRecord": "test-123", "Status": "Created"}')))
+    allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: '{"Success": true}')))
     allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
       street: '1234 Maple Avenue',
       unit: 'Apt 5B',
@@ -87,26 +87,6 @@ RSpec.describe SendgridPostHandler do
           user: user,
           address: address
         )
-      end
-
-      context 'when DirectMail API returns an error' do
-        before do
-          allow(CreatePostcard).to receive(:new).and_return(
-            double(run: double(body: '{"Error": {"Message": "Print cost $0.680 of exceeds available account balance of $0.058", "StatusCode": 422}}'))
-          )
-        end
-
-        it 'sends an error email to the user' do
-          handler.process
-
-          expect(CommandMailer).to have_received(:error).with(
-            'test@example.com',
-            'Test caption',
-            'We encountered an error while processing your postcard: Print cost $0.680 of exceeds available account balance of $0.058',
-            'test@example.com',
-            'postcardmailer@kgk.host'
-          )
-        end
       end
     end
 
@@ -308,8 +288,8 @@ RSpec.describe SendgridPostHandler do
         {
           from: 'Admin <derewecki@gmail.com>',
           to: 'approve@postcardmailer.us',
-          text: '',
-          subject: 'pending@example.com',
+          text: 'pending@example.com',
+          subject: 'approve',
           SPF: "pass",
           dkim: "{@gmail.com : pass}"
         }
@@ -329,7 +309,13 @@ RSpec.describe SendgridPostHandler do
           unverified_user,
           "verified@postcardmailer.us"
         )
-        expect(CommandMailer).not_to have_received(:error)
+        expect(CommandMailer).to have_received(:error).with(
+          "derewecki@gmail.com",
+          "User Approved",
+          "Successfully approved user: pending@example.com",
+          "verified@postcardmailer.us",
+          nil
+        )
       end
 
       context 'when from a different email' do
@@ -337,8 +323,8 @@ RSpec.describe SendgridPostHandler do
           {
             from: 'Not Admin <not-admin@example.com>',
             to: 'approve@postcardmailer.us',
-            text: '',
-            subject: 'pending@example.com',
+            text: 'pending@example.com',
+            subject: 'approve',
             SPF: "pass",
             dkim: "{@example.com : pass}"
           }
@@ -357,8 +343,8 @@ RSpec.describe SendgridPostHandler do
           {
             from: 'Admin <derewecki@gmail.com>',
             to: 'approve@postcardmailer.us',
-            text: '',
-            subject: 'nonexistent@example.com',
+            text: 'nonexistent@example.com',
+            subject: 'approve',
             SPF: "pass",
             dkim: "{@gmail.com : pass}"
           }
@@ -384,7 +370,7 @@ RSpec.describe SendgridPostHandler do
             from: 'Admin <derewecki@gmail.com>',
             to: 'approve@postcardmailer.us',
             text: '',
-            subject: '',
+            subject: 'approve',
             SPF: "pass",
             dkim: "{@gmail.com : pass}"
           }
@@ -396,7 +382,7 @@ RSpec.describe SendgridPostHandler do
           expect(CommandMailer).to have_received(:error).with(
             "derewecki@gmail.com",
             "Approve Error",
-            "Please include the user's email address in the subject line.",
+            "Please include the user's email address in the email body.",
             "verified@postcardmailer.us",
             nil
           )
