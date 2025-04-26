@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 class AddressExtractor
-    def self.extract(text_body, model = "gpt-4.1-nano")
+    def self.extract(text_body, model = "gpt-3.5-turbo")
         url = URI("https://api.openai.com/v1/chat/completions")
 
         # Set the API parameters
