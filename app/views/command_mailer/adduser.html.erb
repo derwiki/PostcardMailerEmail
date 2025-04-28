@@ -12,7 +12,15 @@
 
 <p style="margin: 0 0 1em 0;">You can now send postcards to this recipient by using their nickname "<strong style="color: #000;"><%= @new_address.nickname %></strong>" in the "to:" field of your postcard emails.</p>
 
-<%= render 'command_mailer/postcard_instructions', address: @new_address %>
+<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+  <h3 style="margin-top: 0; color: #0066cc;">Quick Start Guide</h3>
+  <p style="margin: 0 0 1em 0;">To send a postcard:</p>
+  <ol style="margin-left: 20px;">
+    <li style="margin-bottom: 0.5em;">Email to: <strong style="color: #000;"><%= @new_address.nickname %>@postcardmailer.us</strong></li>
+    <li style="margin-bottom: 0.5em;">Subject: Your message to <%= @new_address.name %></li>
+    <li style="margin-bottom: 0.5em;">Attach: Your postcard image</li>
+  </ol>
+</div>
 
 <% unless @user.verified? %>
 <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
