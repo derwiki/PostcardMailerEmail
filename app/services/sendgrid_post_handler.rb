@@ -151,7 +151,7 @@ class SendgridPostHandler
     user.addresses.create!(
       nickname: nickname,
       name: name,
-      address1: address.street,
+      address1: [address.number, address.street, address.street_type].compact.join(' '),
       address2: address.unit,
       city: address.city,
       state: address.state,

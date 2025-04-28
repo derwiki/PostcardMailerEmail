@@ -42,7 +42,9 @@ RSpec.describe SendgridPostHandler do
     allow(EssThree).to receive(:upload)
     allow(CreatePostcard).to receive(:new).and_return(double(run: double(body: '{"Success": true}')))
     allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
-      street: '1234 Maple Avenue',
+      number: '1234',
+      street: 'Maple',
+      street_type: 'Avenue',
       unit: 'Apt 5B',
       city: 'San Francisco',
       state: 'CA',
@@ -198,7 +200,9 @@ RSpec.describe SendgridPostHandler do
       before do
         user
         allow(AddressExtractor).to receive(:extract).and_return(['Sarah Johnson', double(
-          street: '1234 Maple Avenue',
+          number: '1234',
+          street: 'Maple',
+          street_type: 'Avenue',
           unit: 'Apt 5B',
           city: 'San Francisco',
           state: 'CA',

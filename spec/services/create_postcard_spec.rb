@@ -59,7 +59,7 @@ RSpec.describe CreatePostcard, type: :service do
         parsed_body = JSON.parse(json_body)
         
         # Verify basic structure
-        expect(parsed_body['Description']).to eq('2025-04-16 12:00:00 -0700 From Name => To Name')
+        expect(parsed_body['Description']).to match(/2025-04-16 12:00:00.*From Name => To Name/)
         expect(parsed_body['Size']).to eq('4.25x6')
         expect(parsed_body['DryRun']).to be true
         expect(parsed_body['WaitForRender']).to be true

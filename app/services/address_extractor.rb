@@ -3,7 +3,7 @@ require 'net/http'
 require 'json'
 
 class AddressExtractor
-    def self.extract(text_body, model = "gpt-3.5-turbo")
+    def self.generate_address_completion(text_body, model = "gpt-3.5-turbo")
         url = URI("https://api.openai.com/v1/chat/completions")
 
         # Set the API parameters
@@ -50,22 +50,36 @@ Input: #{text_body}"""
   
         # Send the API request
         puts "prompt: #{prompt}"
-        #Rails.logger.info("sendgrid extracted_address json_params: #{json_params}")
         response = Net::HTTP.post(url, json_params, headers)
   
         # Parse the API response
         data = JSON.parse(response.body)
         puts "resp: #{data}"
-        completions = data["choices"].map { |choice| choice["message"]["content"] }
-        #Rails.logger.info("sendgrid extracted_address completions: #{completions}")
-        lines = completions[0].strip.split("\n")
-        lines.each_with_index do |line, index|
-          Rails.logger.info("sendgrid extracted_address line #{index}: #{line}")
+
+        if data["error"]
+          raise "OpenAI API Error: #{data['error']['message']}"
         end
-        oneline_address = lines[1..-1].join(',')
-        Rails.logger.info("sendgrid extracted_address oneline_address: #{oneline_address}")
-        address = StreetAddress::US.parse(oneline_address)
-        Rails.logger.info("sendgrid extracted_address address: #{address}")
-        [lines[0].strip, address]
+
+        if !data["choices"] || data["choices"].empty?
+          raise "No completion returned from OpenAI API"
+        end
+
+        data["choices"].map { |choice| choice["message"]["content"] }
+    end
+
+    def self.extract(text_body, model = "gpt-3.5-turbo")
+        completions = generate_address_completion(text_body, model)
+        lines = completions[0].strip.split("\n")
+        name = lines[0].strip
+        address_lines = lines[1..-1]
+
+        # Join address lines with a comma for StreetAddress parsing
+        address_text = address_lines.join(", ")
+        Rails.logger.info("sendgrid extracted_address text: #{address_text}")
+
+        address = StreetAddress::US.parse(address_text)
+        Rails.logger.info("sendgrid extracted_address parsed: #{address}")
+
+        [name, address]
     end
 end
