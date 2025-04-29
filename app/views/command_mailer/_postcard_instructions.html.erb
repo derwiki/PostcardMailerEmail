@@ -1,12 +1,12 @@
-<div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-  <h3 style="margin-top: 0; color: #0066cc;">Send a Postcard</h3>
-  <p style="margin: 0 0 1em 0;">To send a postcard to someone in your address book:</p>
-  <ol style="margin-left: 20px;">
-    <li style="margin-bottom: 0.5em;">Send an email to <strong style="color: #000;"><%= defined?(address) ? "#{address.nickname}@postcardmailer.us" : "$nickname@postcardmailer.us" %></strong></li>
-    <li style="margin-bottom: 0.5em;">Use the subject line for the <strong style="color: #000;">message</strong> to the recipient</li>
-    <li style="margin-bottom: 0.5em;">Attach the <strong style="color: #000;">image</strong> you want to use for the postcard</li>
+<div class="info-box">
+  <h3 class="heading">Send a Postcard</h3>
+  <p class="section">To send a postcard to someone in your address book:</p>
+  <ol class="list">
+    <li class="list-item">Send an email to <span class="strong"><%= defined?(address) ? "#{address.nickname}@postcardmailer.us" : "$nickname@postcardmailer.us" %></span></li>
+    <li class="list-item">Use the subject line for the <span class="strong">message</span> to the recipient</li>
+    <li class="list-item">Attach the <span class="strong">image</span> you want to use for the postcard</li>
   </ol>
-  <p style="margin: 0 0 1em 0;">Example:<br>
+  <p class="section">Example:<br>
     To: <%= defined?(address) ? "#{address.nickname}@postcardmailer.us" : "mom@postcardmailer.us" %><br>
     Subject: Greetings from San Francisco!<br>
     Attachment: vacation-photo.jpg<br>
