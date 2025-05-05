@@ -74,7 +74,9 @@ class PostcardLifecycleMailerPreview < ActionMailer::Preview
             'Description' => description,
             'Timestamp' => Time.current.iso8601
           }
-        ]
+        ],
+        'EstimatedDeliveryDate' => (Time.current + 3.days).iso8601,
+        'ActualDeliveryDate' => status == 'Delivered' ? Time.current.iso8601 : nil
       },
       directmailers_events: [
         {

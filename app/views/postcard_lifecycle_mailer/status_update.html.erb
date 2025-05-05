@@ -10,6 +10,16 @@
       Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>
     </div>
   <% end %>
+  <% if @postcard.response_data&.dig('EstimatedDeliveryDate').present? %>
+    <div style="margin-top: 10px; color: #888; font-size: 12px;">
+      Estimated Delivery: <%= DateTime.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['EstimatedDeliveryDate'] %>
+    </div>
+  <% end %>
+  <% if @postcard.response_data&.dig('ActualDeliveryDate').present? %>
+    <div style="margin-top: 10px; color: #888; font-size: 12px;">
+      Delivered: <%= DateTime.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['ActualDeliveryDate'] %>
+    </div>
+  <% end %>
 </div>
 
 <p style="margin: 0 0 1em 0;">
