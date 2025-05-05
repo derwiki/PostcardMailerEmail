@@ -1,9 +1,6 @@
 Hello <%= @postcard.address.name %>,
 
 Current Status: <%= @status.humanize %>
-<% if @status_details.present? %>
-<%= @status_details %>
-<% end %>
 
 <% case @status.downcase %>
 <% when "printed" %>

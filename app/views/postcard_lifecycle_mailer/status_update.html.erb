@@ -5,9 +5,6 @@
 <div style="background-color: #f7f9fc; border-left: 4px solid #4a6ee0; padding: 15px; margin-bottom: 20px;">
   <div style="font-weight: bold; margin-bottom: 5px;">Current Status:</div>
   <div><strong><%= @status.humanize %></strong></div>
-  <% if @status_details.present? %>
-    <div style="margin-top: 10px;"><%= @status_details %></div>
-  <% end %>
   <% if @timestamp.present? %>
     <div style="margin-top: 10px; color: #888; font-size: 12px;">
       Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>

@@ -23,14 +23,12 @@ class PostcardLifecycleMailer < ApplicationMailer
 
       # Determine status from the event data
       @status = data_element&.dig(:Status) || data_element&.dig('Status') || @event_type || 'unknown'
-      @status_details = data_element&.dig(:Description) || data_element&.dig('Description')
 
       # Get timestamp
       @timestamp = latest_event['timestamp']
     else
       # Fallback if no events exist
       @status = postcard.status || 'unknown'
-      @status_details = nil
       @event_type = nil
       @timestamp = nil
     end
