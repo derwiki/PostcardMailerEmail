@@ -7,17 +7,17 @@
   <div><strong><%= @status.humanize %></strong></div>
   <% if @timestamp.present? %>
     <div style="margin-top: 10px; color: #888; font-size: 12px;">
-      Updated: <%= DateTime.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue Time.parse(@timestamp).strftime("%B %d, %Y at %I:%M %p") rescue @timestamp %>
+      Updated: <%= DateTime.parse(@timestamp).strftime("%B %-d, %Y at %-l:%M %p") rescue Time.parse(@timestamp).strftime("%B %-d, %Y at %-l:%M %p") rescue @timestamp %>
     </div>
   <% end %>
   <% if @postcard.response_data&.dig('EstimatedDeliveryDate').present? %>
     <div style="margin-top: 10px; color: #888; font-size: 12px;">
-      Estimated Delivery: <%= DateTime.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['EstimatedDeliveryDate'] %>
+      Estimated Delivery: <%= DateTime.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %-d, %Y") rescue Time.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %-d, %Y") rescue @postcard.response_data['EstimatedDeliveryDate'] %>
     </div>
   <% end %>
   <% if @postcard.response_data&.dig('ActualDeliveryDate').present? %>
     <div style="margin-top: 10px; color: #888; font-size: 12px;">
-      Delivered: <%= DateTime.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['ActualDeliveryDate'] %>
+      Delivered: <%= DateTime.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %-d, %Y") rescue Time.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %-d, %Y") rescue @postcard.response_data['ActualDeliveryDate'] %>
     </div>
   <% end %>
 </div>
@@ -73,7 +73,7 @@
         <div><%= event['Description'] %></div>
         <% if event['Timestamp'].present? %>
           <div style="color: #888; font-size: 12px;">
-            <%= DateTime.parse(event['Timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+            <%= DateTime.parse(event['Timestamp']).strftime("%B %-d, %Y at %-l:%M %p") %>
           </div>
         <% end %>
       </div>
@@ -88,7 +88,7 @@
       <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
         <div><strong><%= event['event_type'] %></strong></div>
         <div style="color: #888; font-size: 12px;">
-          <%= DateTime.parse(event['timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+          <%= DateTime.parse(event['timestamp']).strftime("%B %-d, %Y at %-l:%M %p") %>
         </div>
       </div>
     <% end %>

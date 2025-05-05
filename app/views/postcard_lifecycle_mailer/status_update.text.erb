@@ -3,11 +3,11 @@ Hello <%= @postcard.address.name %>,
 Current Status: <%= @status.humanize %>
 
 <% if @postcard.response_data&.dig('EstimatedDeliveryDate').present? %>
-Estimated Delivery: <%= DateTime.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['EstimatedDeliveryDate'] %>
+Estimated Delivery: <%= DateTime.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %-d, %Y") rescue Time.parse(@postcard.response_data['EstimatedDeliveryDate']).strftime("%B %-d, %Y") rescue @postcard.response_data['EstimatedDeliveryDate'] %>
 <% end %>
 
 <% if @postcard.response_data&.dig('ActualDeliveryDate').present? %>
-Delivered: <%= DateTime.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue Time.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %d, %Y") rescue @postcard.response_data['ActualDeliveryDate'] %>
+Delivered: <%= DateTime.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %-d, %Y") rescue Time.parse(@postcard.response_data['ActualDeliveryDate']).strftime("%B %-d, %Y") rescue @postcard.response_data['ActualDeliveryDate'] %>
 <% end %>
 
 <% case @status.downcase %>
@@ -43,7 +43,7 @@ TRACKING HISTORY:
 <% @tracking_events.each do |event| %>
 - <%= event['Status'] %>: <%= event['Description'] %>
   <% if event['Timestamp'].present? %>
-  <%= DateTime.parse(event['Timestamp']).strftime("%B %d, %Y at %I:%M %p") %>
+  <%= DateTime.parse(event['Timestamp']).strftime("%B %-d, %Y at %-l:%M %p") %>
   <% end %>
 <% end %>
 <% end %>
