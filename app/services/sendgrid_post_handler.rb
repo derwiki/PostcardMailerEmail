@@ -36,15 +36,6 @@ class SendgridPostHandler
     bodytext = @params[:text]
     @from_email = extract_email_from_sendgrid_from(@params[:from])
 
-    if !bodytext
-      Rails.logger.info "SendgridPostHandler empty body"
-      send_error_email(
-        "Empty Email Body",
-        "Your email did not contain any text content. Please include the necessary information in your email body."
-      )
-      return
-    end
-
     # Check if this is an approve request
     if @params[:to] == "approve@postcardmailer.us" && @from_email == "derewecki@gmail.com"
       handle_approve_request
@@ -183,6 +174,16 @@ class SendgridPostHandler
       send_error_email(
         "Signup Error",
         "Please include your full name in the subject line when signing up."
+      )
+      return
+    end
+
+    # Check for empty body
+    if !@params[:text]
+      Rails.logger.info "SendgridPostHandler empty body in signup request"
+      send_error_email(
+        "Signup Error",
+        "Please include your complete mailing address in the email body."
       )
       return
     end
@@ -327,6 +328,16 @@ class SendgridPostHandler
       return
     end
 
+    # Check for empty body
+    if !@params[:text]
+      Rails.logger.info "SendgridPostHandler empty body in adduser request"
+      send_error_email(
+        "Add New Address",
+        "Please include the complete mailing address in the email body."
+      )
+      return
+    end
+
     # Extract address from body
     name, address = extract_address_from_body(@params[:text])
     return unless address
@@ -352,13 +363,19 @@ class SendgridPostHandler
       return
     end
 
-    # Extract user email from the text field
-    user_email = @params[:text].to_s.strip
+    # Extract user email from either subject or text field
+    # If subject is 'approve', use the text field
+    user_email = if @params[:subject].to_s.strip.downcase == 'approve'
+                   @params[:text].to_s.strip
+                 else
+                   @params[:subject].to_s.strip
+                 end
+
     if user_email.empty?
       Rails.logger.info "SendgridPostHandler empty user email in approve request"
       send_error_email(
         "Approve Error",
-        "Please include the user's email address in the email body.",
+        "Please include the user's email address in either the subject line or email body.",
         "verified@postcardmailer.us"
       )
       return

@@ -305,21 +305,83 @@ RSpec.describe SendgridPostHandler do
         allow(CommandMailer).to receive(:verified).and_return(verification_mail)
       end
 
-      it 'approves the user and sends verification email' do
-        handler.process
-        
-        expect(unverified_user.reload.verified?).to be true
-        expect(CommandMailer).to have_received(:verified).with(
-          unverified_user,
-          "verified@postcardmailer.us"
-        )
-        expect(CommandMailer).to have_received(:error).with(
-          "derewecki@gmail.com",
-          "User Approved",
-          "Successfully approved user: pending@example.com",
-          "verified@postcardmailer.us",
-          nil
-        )
+      context 'when email is in the message body' do
+        it 'approves the user and sends verification email' do
+          handler.process
+          
+          expect(unverified_user.reload.verified?).to be true
+          expect(CommandMailer).to have_received(:verified).with(
+            unverified_user,
+            "verified@postcardmailer.us"
+          )
+          expect(CommandMailer).to have_received(:error).with(
+            "derewecki@gmail.com",
+            "User Approved",
+            "Successfully approved user: pending@example.com",
+            "verified@postcardmailer.us",
+            nil
+          )
+        end
+      end
+
+      context 'when email is in the subject line' do
+        let(:params) do
+          {
+            from: 'Admin <derewecki@gmail.com>',
+            to: 'approve@postcardmailer.us',
+            text: '',
+            subject: 'pending@example.com',
+            SPF: "pass",
+            dkim: "{@gmail.com : pass}"
+          }
+        end
+
+        it 'approves the user and sends verification email' do
+          handler.process
+          
+          expect(unverified_user.reload.verified?).to be true
+          expect(CommandMailer).to have_received(:verified).with(
+            unverified_user,
+            "verified@postcardmailer.us"
+          )
+          expect(CommandMailer).to have_received(:error).with(
+            "derewecki@gmail.com",
+            "User Approved",
+            "Successfully approved user: pending@example.com",
+            "verified@postcardmailer.us",
+            nil
+          )
+        end
+      end
+
+      context 'when email is in the subject line and body is nil' do
+        let(:params) do
+          {
+            from: 'Admin <derewecki@gmail.com>',
+            to: 'approve@postcardmailer.us',
+            text: nil,
+            subject: 'pending@example.com',
+            SPF: "pass",
+            dkim: "{@gmail.com : pass}"
+          }
+        end
+
+        it 'approves the user and sends verification email' do
+          handler.process
+          
+          expect(unverified_user.reload.verified?).to be true
+          expect(CommandMailer).to have_received(:verified).with(
+            unverified_user,
+            "verified@postcardmailer.us"
+          )
+          expect(CommandMailer).to have_received(:error).with(
+            "derewecki@gmail.com",
+            "User Approved",
+            "Successfully approved user: pending@example.com",
+            "verified@postcardmailer.us",
+            nil
+          )
+        end
       end
 
       context 'when from a different email' do
@@ -374,7 +436,7 @@ RSpec.describe SendgridPostHandler do
             from: 'Admin <derewecki@gmail.com>',
             to: 'approve@postcardmailer.us',
             text: '',
-            subject: 'approve',
+            subject: '',
             SPF: "pass",
             dkim: "{@gmail.com : pass}"
           }
@@ -386,7 +448,7 @@ RSpec.describe SendgridPostHandler do
           expect(CommandMailer).to have_received(:error).with(
             "derewecki@gmail.com",
             "Approve Error",
-            "Please include the user's email address in the email body.",
+            "Please include the user's email address in either the subject line or email body.",
             "verified@postcardmailer.us",
             nil
           )
