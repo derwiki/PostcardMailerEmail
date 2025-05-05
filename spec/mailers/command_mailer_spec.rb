@@ -106,11 +106,12 @@ RSpec.describe CommandMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("WELCOME TO POSTCARDMAILER.US")
-      expect(mail.body.encoded).to match("Available Commands")
+      expect(mail.body.encoded).to match("Here's how to use our service")
       expect(mail.body.encoded).to match("SIGN UP")
       expect(mail.body.encoded).to match("ADD AN ADDRESS")
       expect(mail.body.encoded).to match("SEND A POSTCARD")
       expect(mail.body.encoded).to match("GET HELP")
+      expect(mail.body.encoded).to match("IMPORTANT NOTES")
     end
   end
 end
