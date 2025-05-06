@@ -1,13 +1,15 @@
-require 'street_address'
-require 'net/http'
-require 'json'
+require "street_address"
+require "net/http"
+require "json"
 
 class AddressExtractor
-    def self.generate_address_completion(text_body, model = "gpt-4.1-nano")
-        url = URI("https://api.openai.com/v1/chat/completions")
+  def self.generate_address_completion(text_body, model = "gpt-4.1-nano")
+    url = URI("https://api.openai.com/v1/chat/completions")
 
-        # Set the API parameters
-        prompt = """Format the following text into a valid USPS mailing address.
+    # Set the API parameters
+    prompt =
+      "" \
+        "Format the following text into a valid USPS mailing address.
 Output format should be:
 Line 1: Name
 Line 2: Street address (including apt/suite/unit)
@@ -32,54 +34,53 @@ Bob Wilson
 789 Rural Route 2 Box 45
 Little Rock, AR 72201
 
-Input: #{text_body}"""
-        max_tokens = 100  # The maximum number of tokens to generate
-        temperature = 0.0  # Controls the randomness of the generated text
-        json_params = {
-          "model" => model,
-          "messages" => [{"role": "user", "content": prompt}],
-          "max_tokens" => max_tokens,
-          "temperature" => temperature
-        }.to_json
-  
-        # Set the API headers
-        headers = {
-          "Content-Type" => "application/json",
-          "Authorization" => "Bearer #{ENV['OPENAI_API_KEY']}"  # Replace with your OpenAI API key
-        }
-  
-        # Send the API request
-        puts "prompt: #{prompt}"
-        response = Net::HTTP.post(url, json_params, headers)
-  
-        # Parse the API response
-        data = JSON.parse(response.body)
-        puts "resp: #{data}"
+Input: #{text_body}" \
+        ""
+    max_tokens = 100 # The maximum number of tokens to generate
+    temperature = 0.0 # Controls the randomness of the generated text
+    json_params = {
+      "model" => model,
+      "messages" => [{ role: "user", content: prompt }],
+      "max_tokens" => max_tokens,
+      "temperature" => temperature
+    }.to_json
 
-        if data["error"]
-          raise "OpenAI API Error: #{data['error']['message']}"
-        end
+    # Set the API headers
+    headers = {
+      "Content-Type" => "application/json",
+      "Authorization" => "Bearer #{ENV["OPENAI_API_KEY"]}" # Replace with your OpenAI API key
+    }
 
-        if !data["choices"] || data["choices"].empty?
-          raise "No completion returned from OpenAI API"
-        end
+    # Send the API request
+    puts "prompt: #{prompt}"
+    response = Net::HTTP.post(url, json_params, headers)
 
-        data["choices"].map { |choice| choice["message"]["content"] }
+    # Parse the API response
+    data = JSON.parse(response.body)
+    puts "resp: #{data}"
+
+    raise "OpenAI API Error: #{data["error"]["message"]}" if data["error"]
+
+    if !data["choices"] || data["choices"].empty?
+      raise "No completion returned from OpenAI API"
     end
 
-    def self.extract(text_body, model = "gpt-3.5-turbo")
-        completions = generate_address_completion(text_body, model)
-        lines = completions[0].strip.split("\n")
-        name = lines[0].strip
-        address_lines = lines[1..-1]
+    data["choices"].map { |choice| choice["message"]["content"] }
+  end
 
-        # Join address lines with a comma for StreetAddress parsing
-        address_text = address_lines.join(", ")
-        Rails.logger.info("sendgrid extracted_address text: #{address_text}")
+  def self.extract(text_body, model = "gpt-3.5-turbo")
+    completions = generate_address_completion(text_body, model)
+    lines = completions[0].strip.split("\n")
+    name = lines[0].strip
+    address_lines = lines[1..-1]
 
-        address = StreetAddress::US.parse(address_text)
-        Rails.logger.info("sendgrid extracted_address parsed: #{address}")
+    # Join address lines with a comma for StreetAddress parsing
+    address_text = address_lines.join(", ")
+    Rails.logger.info("sendgrid extracted_address text: #{address_text}")
 
-        [name, address]
-    end
+    address = StreetAddress::US.parse(address_text)
+    Rails.logger.info("sendgrid extracted_address parsed: #{address}")
+
+    [name, address]
+  end
 end

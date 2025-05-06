@@ -4,7 +4,14 @@ class CommandMailerTest < ActionMailer::TestCase
   test "adduser" do
     user = users(:one)
     new_address = addresses(:one)
-    mail = CommandMailer.adduser(user, "ned.flanders@springfield.com", "Add User", "from@example.com", new_address)
+    mail =
+      CommandMailer.adduser(
+        user,
+        "ned.flanders@springfield.com",
+        "Add User",
+        "from@example.com",
+        new_address
+      )
     assert_equal "Re: Add User", mail.subject
     assert_equal ["ned.flanders@springfield.com"], mail.to
     assert_equal ["from@example.com"], mail.from
@@ -31,7 +38,14 @@ class CommandMailerTest < ActionMailer::TestCase
   end
 
   test "error" do
-    mail = CommandMailer.error("ned.flanders@springfield.com", "Error", "Something went wrong", "from@example.com", "bcc@example.com")
+    mail =
+      CommandMailer.error(
+        "ned.flanders@springfield.com",
+        "Error",
+        "Something went wrong",
+        "from@example.com",
+        "bcc@example.com"
+      )
     assert_equal "Re: Error", mail.subject
     assert_equal ["ned.flanders@springfield.com"], mail.to
     assert_equal ["from@example.com"], mail.from
@@ -40,7 +54,13 @@ class CommandMailerTest < ActionMailer::TestCase
   end
 
   test "error without bcc" do
-    mail = CommandMailer.error("ned.flanders@springfield.com", "Error", "Something went wrong", "from@example.com")
+    mail =
+      CommandMailer.error(
+        "ned.flanders@springfield.com",
+        "Error",
+        "Something went wrong",
+        "from@example.com"
+      )
     assert_equal "Re: Error", mail.subject
     assert_equal ["ned.flanders@springfield.com"], mail.to
     assert_equal ["from@example.com"], mail.from
@@ -49,10 +69,15 @@ class CommandMailerTest < ActionMailer::TestCase
   end
 
   test "help" do
-    mail = CommandMailer.help("ned.flanders@springfield.com", "Help", "from@example.com")
+    mail =
+      CommandMailer.help(
+        "ned.flanders@springfield.com",
+        "Help",
+        "from@example.com"
+      )
     assert_equal "PostcardMailer.us - How to Use Our Service", mail.subject
     assert_equal ["ned.flanders@springfield.com"], mail.to
     assert_equal ["from@example.com"], mail.from
     assert_match "WELCOME TO POSTCARDMAILER.US", mail.body.encoded
   end
-end 
+end

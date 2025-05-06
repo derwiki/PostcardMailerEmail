@@ -1,14 +1,17 @@
 require "rails_helper"
 
 RSpec.describe CommandMailer, type: :mailer do
-  let(:user) { double("User", email: "user@example.com", verified?: true, addresses: []) }
-  
+  let(:user) do
+    double("User", email: "user@example.com", verified?: true, addresses: [])
+  end
+
   describe "adduser" do
     let(:recipient_email) { "recipient@example.com" }
     let(:original_subject) { "Add New Contact" }
     let(:from_email) { "adduser@postcardmailer.us" }
     let(:new_address) do
-      double("Address",
+      double(
+        "Address",
         name: "John Smith",
         nickname: "john",
         address1: "123 Main St",
@@ -18,7 +21,15 @@ RSpec.describe CommandMailer, type: :mailer do
         postal_code: "94110"
       )
     end
-    let(:mail) { CommandMailer.adduser(user, recipient_email, original_subject, from_email, new_address) }
+    let(:mail) do
+      CommandMailer.adduser(
+        user,
+        recipient_email,
+        original_subject,
+        from_email,
+        new_address
+      )
+    end
 
     it "renders the headers" do
       expect(mail.subject).to eq("Re: Add New Contact")
@@ -68,14 +79,22 @@ RSpec.describe CommandMailer, type: :mailer do
       expect(mail.body.encoded).to match("Great news!")
     end
   end
-  
+
   describe "error" do
     let(:to_address) { "user@example.com" }
     let(:original_subject) { "Failed Command" }
     let(:error_message) { "Address could not be parsed from your email" }
     let(:from_email) { "help@postcardmailer.us" }
     let(:bcc_email) { "custom-bcc@example.com" }
-    let(:mail) { CommandMailer.error(to_address, original_subject, error_message, from_email, bcc_email) }
+    let(:mail) do
+      CommandMailer.error(
+        to_address,
+        original_subject,
+        error_message,
+        from_email,
+        bcc_email
+      )
+    end
 
     it "renders the headers" do
       expect(mail.subject).to eq("Re: Failed Command")
@@ -86,17 +105,31 @@ RSpec.describe CommandMailer, type: :mailer do
 
     it "renders the body" do
       expect(mail.body.encoded).to match("Error")
-      expect(mail.body.encoded).to match("Address could not be parsed from your email")
+      expect(mail.body.encoded).to match(
+        "Address could not be parsed from your email"
+      )
     end
-    
+
     it "defaults to postcardmailer@kgk.host when bcc not specified" do
-      mail_without_bcc = CommandMailer.error(to_address, original_subject, error_message, from_email)
+      mail_without_bcc =
+        CommandMailer.error(
+          to_address,
+          original_subject,
+          error_message,
+          from_email
+        )
       expect(mail_without_bcc.bcc).to eq(["postcardmailer@kgk.host"])
     end
   end
 
   describe "help" do
-    let(:mail) { CommandMailer.help("user@example.com", "Help request", "help@postcardmailer.us") }
+    let(:mail) do
+      CommandMailer.help(
+        "user@example.com",
+        "Help request",
+        "help@postcardmailer.us"
+      )
+    end
 
     it "renders the headers" do
       expect(mail.subject).to eq("Re: Help request")

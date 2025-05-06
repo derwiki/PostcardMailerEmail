@@ -1,6 +1,6 @@
-require_relative 'create_postcard'
-require_relative 'address_extractor'
-require_relative '../models/concerns/email_helper'
+require_relative "create_postcard"
+require_relative "address_extractor"
+require_relative "../models/concerns/email_helper"
 
 class SendgridPostHandler
   include EmailHelper
@@ -15,12 +15,12 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler headers: #{@params[:headers]}"
     Rails.logger.info "SendgridPostHandler SPF: #{@params[:SPF]}"
     Rails.logger.info "SendgridPostHandler DKIM: #{@params[:dkim]}"
-    
+
     # Verify email authentication
     unless spf_passes? && dkim_passes?
       @from_email = extract_email_from_sendgrid_from(@params[:from])
       Rails.logger.warn "Email authentication failed for #{@from_email}. SPF: #{@params[:SPF]}, DKIM: #{@params[:dkim]}"
-      
+
       CommandMailer.error(
         @from_email,
         "Email Authentication Failed",
@@ -28,7 +28,7 @@ class SendgridPostHandler
         "help@postcardmailer.us",
         "postcardmailer@kgk.host"
       ).deliver_now
-      
+
       Rails.logger.info "SendgridPostHandler sent error email about authentication failure to: #{@from_email}"
       return
     end
@@ -37,7 +37,8 @@ class SendgridPostHandler
     @from_email = extract_email_from_sendgrid_from(@params[:from])
 
     # Check if this is an approve request
-    if @params[:to] == "approve@postcardmailer.us" && @from_email == "derewecki@gmail.com"
+    if @params[:to] == "approve@postcardmailer.us" &&
+         @from_email == "derewecki@gmail.com"
       handle_approve_request
       return
     end
@@ -49,7 +50,7 @@ class SendgridPostHandler
     end
 
     # Check if this is an adduser request
-    if @params[:subject].strip.downcase == 'adduser'
+    if @params[:subject].strip.downcase == "adduser"
       handle_adduser_request
       return
     end
@@ -86,7 +87,7 @@ class SendgridPostHandler
   def send_error_email(subject, message, to_email = nil, bcc_email = nil)
     to_email ||= @params[:to] || "help@postcardmailer.us"
     @from_email ||= extract_email_from_sendgrid_from(@params[:from])
-    
+
     CommandMailer.error(
       @from_email,
       subject.presence || @params[:subject],
@@ -94,7 +95,7 @@ class SendgridPostHandler
       to_email,
       bcc_email
     ).deliver_now
-    
+
     Rails.logger.info "SendgridPostHandler sent '#{message.truncate(30)}' error email to: #{@from_email}"
   end
 
@@ -109,7 +110,7 @@ class SendgridPostHandler
       )
       return nil
     end
-    
+
     unless user.verified?
       Rails.logger.info "SendgridPostHandler user not verified: #{@from_email}"
       send_error_email(
@@ -142,7 +143,11 @@ class SendgridPostHandler
     user.addresses.create!(
       nickname: nickname,
       name: name,
-      address1: [address.number, address.street, address.street_type].compact.join(' '),
+      address1: [
+        address.number,
+        address.street,
+        address.street_type
+      ].compact.join(" "),
       address2: address.unit,
       city: address.city,
       state: address.state,
@@ -194,15 +199,10 @@ class SendgridPostHandler
 
     # Create user and their first address
     user = User.create!(email: @from_email)
-    new_address = create_address(
-      user,
-      name.split.first.downcase,
-      name,
-      address
-    )
+    new_address = create_address(user, name.split.first.downcase, name, address)
 
     Rails.logger.info "SendgridPostHandler created new user and address: #{new_address.inspect}"
-    
+
     # Send signup confirmation email with original subject for threading
     CommandMailer.signup(user, @params[:subject], @params[:to]).deliver_now
     Rails.logger.info "SendgridPostHandler sent signup confirmation email to: #{user.email}"
@@ -211,12 +211,12 @@ class SendgridPostHandler
   def handle_mail_postcard_request
     user = authenticate_user
     return unless user
-    
+
     # Extract nickname from the "to" email address (format: nickname@postcardmailer.us)
-    nickname = @params[:to].split('@').first
+    nickname = @params[:to].split("@").first
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
-    
+
     unless address
       Rails.logger.info "SendgridPostHandler address not found for nickname: #{nickname}"
       send_error_email(
@@ -268,22 +268,25 @@ class SendgridPostHandler
     Rails.logger.info "SendgridPostHandler dryrun: #{dryrun}"
 
     # Create the postcard with the image_url and message
-    resp = CreatePostcard.new(
-      from_address,
-      to_address,
-      image_url,
-      message,
-      dryrun: dryrun,
-      user: user,
-      address: address
-    ).run
+    resp =
+      CreatePostcard.new(
+        from_address,
+        to_address,
+        image_url,
+        message,
+        dryrun: dryrun,
+        user: user,
+        address: address
+      ).run
     Rails.logger.info("SendgridPostHandler DirectMail response: #{resp.body}")
 
     # Check for errors in the response
     response_body = JSON.parse(resp.body)
     if response_body["Error"].present?
       error_message = response_body["Error"]["Message"]
-      Rails.logger.error("SendgridPostHandler DirectMail error: #{error_message}")
+      Rails.logger.error(
+        "SendgridPostHandler DirectMail error: #{error_message}"
+      )
       send_error_email(
         @params[:subject],
         "We encountered an error while processing your postcard: #{error_message}",
@@ -298,7 +301,7 @@ class SendgridPostHandler
     return unless user
 
     # Verify this is an adduser command
-    unless @params[:subject].strip.downcase == 'adduser'
+    unless @params[:subject].strip.downcase == "adduser"
       Rails.logger.info "SendgridPostHandler invalid adduser command"
       send_error_email(
         "Invalid Command",
@@ -308,7 +311,7 @@ class SendgridPostHandler
     end
 
     # Extract nickname from the "to" email address
-    nickname = @params[:to].split('@').first
+    nickname = @params[:to].split("@").first
     if nickname.empty?
       Rails.logger.info "SendgridPostHandler empty nickname in email address"
       send_error_email(
@@ -346,9 +349,15 @@ class SendgridPostHandler
     new_address = create_address(user, nickname, name, address)
 
     Rails.logger.info "SendgridPostHandler created new address: #{new_address.inspect}"
-    
+
     # Send adduser confirmation email with original subject for threading
-    CommandMailer.adduser(user, @from_email, @params[:subject], @params[:to], new_address).deliver_now
+    CommandMailer.adduser(
+      user,
+      @from_email,
+      @params[:subject],
+      @params[:to],
+      new_address
+    ).deliver_now
     Rails.logger.info "SendgridPostHandler sent adduser confirmation email to: #{@from_email}"
   end
 
@@ -365,11 +374,12 @@ class SendgridPostHandler
 
     # Extract user email from either subject or text field
     # If subject is 'approve', use the text field
-    user_email = if @params[:subject].to_s.strip.downcase == 'approve'
-                   @params[:text].to_s.strip
-                 else
-                   @params[:subject].to_s.strip
-                 end
+    user_email =
+      if @params[:subject].to_s.strip.downcase == "approve"
+        @params[:text].to_s.strip
+      else
+        @params[:subject].to_s.strip
+      end
 
     if user_email.empty?
       Rails.logger.info "SendgridPostHandler empty user email in approve request"
@@ -421,7 +431,10 @@ class SendgridPostHandler
 
     # Make DELETE request to DirectMail API
     begin
-      uri = URI("https://print.directmailers.com/api/v1/postcard/#{print_record_guid}")
+      uri =
+        URI(
+          "https://print.directmailers.com/api/v1/postcard/#{print_record_guid}"
+        )
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
@@ -438,7 +451,8 @@ class SendgridPostHandler
           "postcardmailer@kgk.host"
         ).deliver_now
       else
-        error_message = response_body["Error"]&.dig("Message") || "Unknown error occurred"
+        error_message =
+          response_body["Error"]&.dig("Message") || "Unknown error occurred"
         Rails.logger.error "SendgridPostHandler failed to cancel postcard: #{error_message}"
         send_error_email(
           "Cancel Error",
@@ -466,11 +480,11 @@ class SendgridPostHandler
 
     unless user
       Rails.logger.info "SendgridPostHandler user not found for email: #{from_email}"
-      return [nil, nil]
+      return nil, nil
     end
 
     # Extract nickname from the "to" email address (format: nickname@postcardmailer.us)
-    nickname = @params[:to].split('@').first
+    nickname = @params[:to].split("@").first
     Rails.logger.info "SendgridPostHandler looking up address with nickname: #{nickname}"
     address = user.addresses.find_by(nickname: nickname)
 
@@ -480,15 +494,15 @@ class SendgridPostHandler
       if user.verified?
         CommandMailer.error(
           from_email,
-          @params[:subject], 
-          "Address not found for nickname: #{nickname}. Please make sure you're using a valid nickname from your address book.", 
+          @params[:subject],
+          "Address not found for nickname: #{nickname}. Please make sure you're using a valid nickname from your address book.",
           @params[:to]
         ).deliver_now
         Rails.logger.info "SendgridPostHandler sent error email to: #{user.email}"
       end
-      return [nil, nil]
+      return nil, nil
     end
-    
+
     Rails.logger.info "SendgridPostHandler found address for nickname: #{nickname}"
     [user, address]
   end

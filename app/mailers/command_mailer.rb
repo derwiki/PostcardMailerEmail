@@ -50,7 +50,13 @@ class CommandMailer < ApplicationMailer
   end
 
   # Send error notification when a command fails or has issues
-  def error(to_address, original_subject, error_message, from_email, bcc_email = nil)
+  def error(
+    to_address,
+    original_subject,
+    error_message,
+    from_email,
+    bcc_email = nil
+  )
     @error_message = error_message
     @message = error_message
     @email = to_address
@@ -62,22 +68,22 @@ class CommandMailer < ApplicationMailer
       bcc: bcc_email || "postcardmailer@kgk.host"
     )
   end
-  
+
   # Send help instructions for using the service
   def help(to_address, original_subject, from_email)
     @email = to_address
 
-    mail(
-      to: to_address,
-      from: from_email,
-      subject: "Re: #{original_subject}"
-    )
+    mail(to: to_address, from: from_email, subject: "Re: #{original_subject}")
   end
 
   def cancellation_success(from_email, postcard_print_record_guid, to_email)
     @from_email = from_email
     @subject = subject
-    mail(to: to_email, bcc: bcc_email, subject: "re: #{postcard_print_record_guid}")
+    mail(
+      to: to_email,
+      bcc: bcc_email,
+      subject: "re: #{postcard_print_record_guid}"
+    )
   end
 
   private

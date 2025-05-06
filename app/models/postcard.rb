@@ -16,7 +16,10 @@ class Postcard < ApplicationRecord
     if directmailers_events.present?
       # Look through each event"s data for EstimatedDeliveryDate
       directmailers_events.each do |event|
-        if (delivery_date = event.dig("data", "Data", 0, "EstimatedDeliveryDate")).present?
+        if (
+             delivery_date =
+               event.dig("data", "Data", 0, "EstimatedDeliveryDate")
+           ).present?
           return delivery_date
         end
       end
@@ -30,8 +33,9 @@ class Postcard < ApplicationRecord
 
   def extract_print_record_id_from_response_data
     # Only extract if print_record_id is nil and response_data contains PrintRecord
-    if print_record_id.blank? && response_data.present? && response_data.is_a?(Hash)
-      self.print_record_id = response_data['PrintRecord']
+    if print_record_id.blank? && response_data.present? &&
+         response_data.is_a?(Hash)
+      self.print_record_id = response_data["PrintRecord"]
     end
   end
-end 
+end

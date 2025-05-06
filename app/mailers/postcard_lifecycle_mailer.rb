@@ -1,5 +1,5 @@
 class PostcardLifecycleMailer < ApplicationMailer
-  layout 'email'
+  layout "email"
 
   # Subject can be set in your I18n file at config/locales/en.yml
   # with the following lookup:
@@ -15,20 +15,23 @@ class PostcardLifecycleMailer < ApplicationMailer
 
     # Extract status information from the latest event
     if latest_event.present?
-      event_data = latest_event['data']
-      @event_type = latest_event['event_type']
+      event_data = latest_event["data"]
+      @event_type = latest_event["event_type"]
 
       # Get the first Data element if it exists
-      data_element = event_data&.dig(:Data)&.first || event_data&.dig('Data')&.first || {}
+      data_element =
+        event_data&.dig(:Data)&.first || event_data&.dig("Data")&.first || {}
 
       # Determine status from the event data
-      @status = data_element&.dig(:Status) || data_element&.dig('Status') || @event_type || 'unknown'
+      @status =
+        data_element&.dig(:Status) || data_element&.dig("Status") ||
+          @event_type || "unknown"
 
       # Get timestamp
-      @timestamp = latest_event['timestamp']
+      @timestamp = latest_event["timestamp"]
     else
       # Fallback if no events exist
-      @status = postcard.status || 'unknown'
+      @status = postcard.status || "unknown"
       @event_type = nil
       @timestamp = nil
     end
@@ -42,14 +45,17 @@ class PostcardLifecycleMailer < ApplicationMailer
     @total_cost = @total_cards_sent * 0.68
 
     # Use the nickname in the from email address
-    nickname = postcard.address.nickname.present? ? postcard.address.nickname : 'notifications'
+    nickname =
+      (
+        if postcard.address.nickname.present?
+          postcard.address.nickname
+        else
+          "notifications"
+        end
+      )
     from_email = "#{nickname}@postcardmailer.us"
 
-    mail(
-      to: @user.email,
-      from: from_email,
-      subject: "Re: #{@postcard.message}"
-    )
+    mail(to: @user.email, from: from_email, subject: "Re: #{@postcard.message}")
   end
 
   private

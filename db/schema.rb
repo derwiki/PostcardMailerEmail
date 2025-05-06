@@ -38,7 +38,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_220333) do
     t.string "print_record_id"
     t.json "directmailers_events", default: []
     t.index ["address_id"], name: "index_postcards_on_address_id"
-    t.index ["print_record_id"], name: "index_postcards_on_print_record_id", unique: true
+    t.index ["print_record_id"],
+            name: "index_postcards_on_print_record_id",
+            unique: true
     t.index ["user_id"], name: "index_postcards_on_user_id"
   end
 

@@ -54,7 +54,7 @@ class DirectmailerController < ApplicationController
     if postcard.save(validate: false)
       Rails.logger.info "Recorded webhook event for Postcard: #{postcard.id}"
     else
-      Rails.logger.error "Failed to record webhook event: #{postcard.errors.full_messages.join(', ')}"
+      Rails.logger.error "Failed to record webhook event: #{postcard.errors.full_messages.join(", ")}"
     end
   end
 
@@ -98,14 +98,14 @@ class DirectmailerController < ApplicationController
         :RenderedPdf,
         :PostalCarrier,
         :PostalClass,
-        { To: [:Name, :AddressLine1, :AddressLine2, :City, :State, :Zip] },
-        { From: [:Name, :AddressLine1, :AddressLine2, :City, :State, :Zip] },
-        { FrontThumbnails: [:Small, :Medium, :Large] },
-        { BackThumbnails: [:Small, :Medium, :Large] },
+        { To: %i[Name AddressLine1 AddressLine2 City State Zip] },
+        { From: %i[Name AddressLine1 AddressLine2 City State Zip] },
+        { FrontThumbnails: %i[Small Medium Large] },
+        { BackThumbnails: %i[Small Medium Large] },
         { TrackingEvents: [] },
         :EstimatedDeliveryDate,
         :ActualDeliveryDate
       ]
     )
   end
-end 
+end

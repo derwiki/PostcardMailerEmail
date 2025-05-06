@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-require 'net/http'
-require 'benchmark'
-require 'json'
+require "net/http"
+require "benchmark"
+require "json"
 
-DIRECT_MAIL_KEY = ENV['DIRECT_MAIL_KEY'] unless defined?(DIRECT_MAIL_KEY)
+DIRECT_MAIL_KEY = ENV["DIRECT_MAIL_KEY"] unless defined?(DIRECT_MAIL_KEY)
 
 class MailAPIException < StandardError
   attr_accessor :code, :details
-  def initialize(code, details, msg = 'We had a problem sending your request to our print shop.')
+  def initialize(
+    code,
+    details,
+    msg = "We had a problem sending your request to our print shop."
+  )
     self.code = code
     self.details = details
     super(msg)
@@ -27,9 +31,18 @@ class CreatePostcard
   attr_accessor :user
   attr_accessor :address
 
-  TARGET_URI = URI('https://print.directmailers.com/api/v1/postcard/')
+  TARGET_URI = URI("https://print.directmailers.com/api/v1/postcard/")
 
-  def initialize(from_address, to_address, url, message, dryrun: true, font_size: nil, user: nil, address: nil)
+  def initialize(
+    from_address,
+    to_address,
+    url,
+    message,
+    dryrun: true,
+    font_size: nil,
+    user: nil,
+    address: nil
+  )
     self.from_address = from_address
     self.to_address = to_address
     self.url = url
@@ -52,16 +65,17 @@ class CreatePostcard
 
     if user && address
       response_body = JSON.parse(response.body)
-      postcard = Postcard.create!(
-        user: user,
-        address: address,
-        status: response.code,
-        response_data: response_body,
-        image_url: url,
-        message: message,
-        dryrun: dryrun,
-        print_record_id: response_body['PrintRecord']
-      )
+      postcard =
+        Postcard.create!(
+          user: user,
+          address: address,
+          status: response.code,
+          response_data: response_body,
+          image_url: url,
+          message: message,
+          dryrun: dryrun,
+          print_record_id: response_body["PrintRecord"]
+        )
     end
 
     response
@@ -72,13 +86,12 @@ class CreatePostcard
       headers: headers
     }
 
-
     # Store error in database if user and address are provided
     if user && address
       Postcard.create!(
         user: user,
         address: address,
-        status: 'error',
+        status: "error",
         response_data: error_data,
         image_url: url,
         message: message,
@@ -91,36 +104,38 @@ class CreatePostcard
 
   def headers
     req = {}
-    req['Content-Type'] = 'application/json'
-    req['Accept'] = 'application/json'
-    req['Authorization'] = "Basic #{DIRECT_MAIL_KEY}"
+    req["Content-Type"] = "application/json"
+    req["Accept"] = "application/json"
+    req["Authorization"] = "Basic #{DIRECT_MAIL_KEY}"
     req
   end
 
   def json_template
     {
-      'Description' => "#{Time.now} #{from_address[:name]} => #{to_address[:name]}",
-      'Size' => '4.25x6',
-      'DryRun' => dryrun,
-      'WaitForRender' => true,
-      'To' => {
-        'Name' => to_address[:name],
-        'AddressLine1' => to_address[:address1],
-        'AddressLine2' => to_address[:address2],
-        'City' => to_address[:city],
-        'State' => to_address[:state],
-        'Zip' => to_address[:postal_code]
+      "Description" =>
+        "#{Time.now} #{from_address[:name]} => #{to_address[:name]}",
+      "Size" => "4.25x6",
+      "DryRun" => dryrun,
+      "WaitForRender" => true,
+      "To" => {
+        "Name" => to_address[:name],
+        "AddressLine1" => to_address[:address1],
+        "AddressLine2" => to_address[:address2],
+        "City" => to_address[:city],
+        "State" => to_address[:state],
+        "Zip" => to_address[:postal_code]
       },
-      'From' => {
-        'Name' => from_address[:name],
-        'AddressLine1' => from_address[:address1],
-        'AddressLine2' => from_address[:address2],
-        'City' => from_address[:city],
-        'State' => from_address[:state],
-        'Zip' => from_address[:postal_code]
+      "From" => {
+        "Name" => from_address[:name],
+        "AddressLine1" => from_address[:address1],
+        "AddressLine2" => from_address[:address2],
+        "City" => from_address[:city],
+        "State" => from_address[:state],
+        "Zip" => from_address[:postal_code]
       },
-      'Back' => "<html><body style='width: 1875px; height: 1350px; background: url(#{url}); background-size: cover' /></html>",
-      'Front' => <<~HTML
+      "Back" =>
+        "<html><body style='width: 1875px; height: 1350px; background: url(#{url}); background-size: cover' /></html>",
+      "Front" => <<~HTML
         <html>
 
         <head>
@@ -155,7 +170,7 @@ class CreatePostcard
                   position: absolute;
                   width: 2.0in;
                   font-family: sans-serif;
-                  font-size: #{ self.font_size };
+                  font-size: #{self.font_size};
                 }
                 #message {
                   position: absolute;
