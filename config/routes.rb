@@ -16,4 +16,9 @@ Rails.application.routes.draw do
 
   # Direct Mailer Webhook
   post "/webhook", to: "directmailer#webhook"
+
+  # Admin routes
+  namespace :admin do
+    resources :postcards, only: [:index]
+  end
 end
