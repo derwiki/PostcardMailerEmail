@@ -399,16 +399,6 @@ class SendgridPostHandler
 
     # Send verification notification to the user with BCC to admin
     CommandMailer.verified(user, "verified@postcardmailer.us").deliver_now
-
-    # Send confirmation to admin
-    CommandMailer.error(
-      @from_email,
-      "User Approved",
-      "Successfully approved user: #{user_email}",
-      "verified@postcardmailer.us",
-      nil
-    ).deliver_now
-
     Rails.logger.info "SendgridPostHandler sent verification email to: #{user_email} with admin BCC"
   end
 

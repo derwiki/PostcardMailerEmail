@@ -314,13 +314,6 @@ RSpec.describe SendgridPostHandler do
             unverified_user,
             "verified@postcardmailer.us"
           )
-          expect(CommandMailer).to have_received(:error).with(
-            "derewecki@gmail.com",
-            "User Approved",
-            "Successfully approved user: pending@example.com",
-            "verified@postcardmailer.us",
-            nil
-          )
         end
       end
 
@@ -344,13 +337,6 @@ RSpec.describe SendgridPostHandler do
             unverified_user,
             "verified@postcardmailer.us"
           )
-          expect(CommandMailer).to have_received(:error).with(
-            "derewecki@gmail.com",
-            "User Approved",
-            "Successfully approved user: pending@example.com",
-            "verified@postcardmailer.us",
-            nil
-          )
         end
       end
 
@@ -373,13 +359,6 @@ RSpec.describe SendgridPostHandler do
           expect(CommandMailer).to have_received(:verified).with(
             unverified_user,
             "verified@postcardmailer.us"
-          )
-          expect(CommandMailer).to have_received(:error).with(
-            "derewecki@gmail.com",
-            "User Approved",
-            "Successfully approved user: pending@example.com",
-            "verified@postcardmailer.us",
-            nil
           )
         end
       end
