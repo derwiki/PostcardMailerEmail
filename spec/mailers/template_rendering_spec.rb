@@ -38,7 +38,8 @@ RSpec.describe "Email Template Rendering", type: :view do
               'Data' => [
                 {
                   'Status' => 'Mailed',
-                  'Description' => 'Your postcard has been mailed.'
+                  'Description' => 'Your postcard has been mailed.',
+                  'EstimatedDeliveryDate' => (Time.current + 3.days).iso8601
                 }
               ]
             }
@@ -54,7 +55,9 @@ RSpec.describe "Email Template Rendering", type: :view do
           ]
         },
         status: 'Mailed'
-      )
+      ).tap do |postcard|
+        allow(postcard).to receive(:estimated_delivery_date).and_return((Time.current + 3.days).iso8601)
+      end
     end
 
     it 'creates a status update mail without template errors' do
@@ -95,7 +98,9 @@ RSpec.describe "Email Template Rendering", type: :view do
             ]
           },
           status: 'Mailed'
-        )
+        ).tap do |postcard|
+          allow(postcard).to receive(:estimated_delivery_date).and_return((Time.current + 3.days).iso8601)
+        end
       end
       
       it 'renders the template with many webhook events without errors' do
