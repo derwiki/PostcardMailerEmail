@@ -8,8 +8,6 @@ class Admin::PostcardsController < ApplicationController
   private
 
   def authenticate_admin
-    unless params[:secret] == ENV["ADMIN_SECRET"]
-      render plain: "Unauthorized", status: :unauthorized
-    end
+    redirect_to root_path unless params[:secret] == ENV["ADMIN_SECRET"]
   end
 end

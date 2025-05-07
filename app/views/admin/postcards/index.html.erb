@@ -65,7 +65,7 @@
         <img src="<%= postcard.image_url %>" alt="Postcard image">
         <p><strong>Message:</strong> <%= postcard.message %></p>
         <p><strong>Created:</strong> <%= postcard.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
-        <p><strong>Estimated Delivery:</strong> <%= postcard.estimated_delivery_date&.strftime("%B %d, %Y") || "Not available" %></p>
+        <p><strong>Estimated Delivery:</strong> <%= postcard.estimated_delivery_date || "Not available" %></p>
         <p><strong>Print Record ID:</strong> <%= postcard.print_record_id || "Not available" %></p>
       </div>
     <% end %>
