@@ -1,5 +1,3 @@
-Hello <%= @postcard.address.name %>,
-
 Current Status: <%= @status.humanize %>
 
 <% if @postcard.response_data&.dig('EstimatedDeliveryDate').present? %>

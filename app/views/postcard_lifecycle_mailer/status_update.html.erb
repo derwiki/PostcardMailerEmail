@@ -1,7 +1,5 @@
 <% content_for :title do %>Postcard Status Update<% end %>
 
-<p style="margin: 0 0 1em 0;">Hello <%= @postcard.address.name %>,</p>
-
 <div style="background-color: #f7f9fc; border-left: 4px solid #4a6ee0; padding: 15px; margin-bottom: 20px;">
   <div style="font-weight: bold; margin-bottom: 5px;">Current Status:</div>
   <div><strong><%= @status.humanize %></strong></div>
