@@ -63,3 +63,27 @@ An important mental shift was to care less about the code "quality," or at least
 I also think it's worth mentioning that without this agentic style of building, I probably would not have built this: I simply didn't have enough time, let alone enough focus/flow time to be productive. So in a very real way, using Cursor with agentic programming allowed me to build something I would not have built before.
 
 Similarly, I think this means we've lowered the bar for personal/small-audience apps. I'm looking forward to the day where a Moonrise prompt will yield a fully working app.
+
+# Beyond Personal Projects
+
+While I've focused on personal projects, I've been thinking about how these lessons might apply in larger settings. The moonrise app's hardcoded test case taught me something crucial: you absolutely need human review of agent-generated code. It's not enough to just run the tests and see if they pass. You need someone who understands the problem domain to validate that the agent is solving the real problem, not just making the tests pass. This is especially true in production settings where the stakes are higher and the systems are more complex.
+
+## Security and Risk
+While my postcard app is low-risk, I still had to think about:
+- How to handle email addresses and personal data
+- What could go wrong if the agent made a mistake
+- How to validate inputs and outputs
+
+In a larger setting, these concerns would be even more critical, requiring careful review and validation. The agent might suggest a solution that works but introduces security vulnerabilities or doesn't handle edge cases properly. This is where human expertise becomes crucial—not just to review the code, but to understand the broader implications of how the agent solved the problem.
+
+# Conclusion
+
+After these experiments, I've come to believe that the true "art" of agentic-assisted coding lies in getting the scope of work just right. Too broad, and the agent wanders into implementation details it can't handle. Too narrow, and you're fighting against the agent's natural problem-solving abilities. The sweet spot is giving the agent enough context and constraints to solve a meaningful problem while leaving room for it to find its own path to the solution.
+
+One thing to watch out for: while the code the agents produce is usually "good enough" to work, you need to be vigilant about how it solves problems. I was particularly struck by how one attempt at the moonrise app tried to "solve" the test case by hardcoding the answer for April 7th instead of implementing the actual astronomical calculations. This kind of "cheating" is a red flag that the agent is either out of its depth or needs better prompting to understand the real requirements.
+
+The real power of agentic coding, though, is how it lowers the bar to building things. You don't need large blocks of focused time to make progress. Instead, you can chip away at a project in small increments—a few minutes here, a few minutes there—while doing other things. The agent keeps the context and can pick up where you left off, making it perfect for those of us who can't dedicate hours of uninterrupted time to coding.
+
+This isn't just about making it easier to build personal projects. It's about making it possible to build them at all. Without agentic coding, I wouldn't have built the postcard app. I simply didn't have the time or focus to do it the traditional way. And that's the real promise of this technology: not just making coding faster, but making it accessible to people who, for whatever reason, can't commit to the traditional development workflow.
+
+While I've focused on my personal journey, I believe these insights about scope, validation, and incremental progress apply whether you're building a side project or working on enterprise software. The tools and techniques might be different, but the core principles of getting the scope right, validating the solutions, and making steady progress remain the same. The key is adapting these approaches to your specific context—whether that's a personal project or a large-scale system.
