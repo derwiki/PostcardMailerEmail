@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "pages#landing_page"
 
+  get "/pages/landing_page", to: "pages#landing_page"
+
   post "/sendgrid", to: "sendgrid#create"
 
   # Direct Mailer Webhook

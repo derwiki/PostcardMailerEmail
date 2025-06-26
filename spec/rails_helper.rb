@@ -10,6 +10,10 @@ end
 # that will avoid rails generators crashing because migrations haven't been run yet
 # return unless Rails.env.test?
 require "rspec/rails"
+require "rails-controller-testing"
+Rails::Controller::Testing::TemplateAssertions
+Rails::Controller::Testing::Integration
+Rails::Controller::Testing::TestProcess
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -66,4 +70,8 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  config.include Rails::Controller::Testing::TemplateAssertions, type: :request
+  config.include Rails::Controller::Testing::Integration, type: :request
+  config.include Rails::Controller::Testing::TestProcess, type: :request
 end
