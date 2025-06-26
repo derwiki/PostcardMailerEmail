@@ -6,8 +6,8 @@ FactoryBot.define do
     image_url { "https://example.com/test.jpg" }
     message { "Test message" }
     dryrun { false }
-    response_data { { "PrintRecord" => "pm-test-123" } }
-    print_record_id { "pm-test-123" }
+    response_data { { "PrintRecord" => "pm-test-#{SecureRandom.uuid}" } }
+    sequence(:print_record_id) { |n| "pm-test-#{n}-#{SecureRandom.uuid}" }
     directmailers_events { [] }
   end
 end
